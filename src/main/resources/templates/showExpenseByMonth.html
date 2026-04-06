@@ -3,7 +3,6 @@
 <head>
     <title>Monthly Expenses — xpns.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,317 +18,147 @@
             --font-body: 'DM Sans', sans-serif;
         }
 
-        body {
-            background: var(--paper);
-            font-family: var(--font-body);
-            color: var(--ink);
-            min-height: 100vh;
-        }
+        body { background: var(--paper); font-family: var(--font-body); color: var(--ink); min-height: 100vh; }
 
-        /* ── HEADER ─────────────────────────────── */
-        header {
-            background: var(--ink);
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 60px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .brand {
-            font-family: var(--font-head);
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            text-decoration: none;
-        }
-        .brand span { color: var(--accent); }
-        nav a {
-            color: rgba(255,255,255,0.55);
-            text-decoration: none;
-            font-size: 13px;
-            padding: 7px 14px;
-            border-radius: 50px;
-            transition: background 0.2s, color 0.2s;
-            margin-left: 4px;
-        }
-        nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        nav a.cta { background: var(--accent); color: var(--ink); font-family: var(--font-head); font-weight: 600; }
+        /* ── PAGE HEADER ── */
+        .page-header { background: var(--ink); color: #fff; padding: 40px 40px 46px; }
+        .page-header .label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 8px; }
+        .page-header h1 { font-family: var(--font-head); font-size: clamp(26px, 4.5vw, 46px); font-weight: 700; letter-spacing: -1px; line-height: 1.1; }
 
-        /* ── PAGE HEADER ─────────────────────────── */
-        .page-header {
-            background: var(--ink);
-            color: #fff;
-            padding: 40px 40px 44px;
-        }
-
-        .page-header .label {
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 8px;
-        }
-
-        .page-header h1 {
-            font-family: var(--font-head);
-            font-size: clamp(28px, 5vw, 48px);
-            font-weight: 700;
-            letter-spacing: -1px;
-            line-height: 1.1;
-        }
-
-        /* ── MONTH PICKER ────────────────────────── */
-        .month-bar {
+        /* ── FILTER BAR — dropdowns only, no form/submit ── */
+        .filter-bar {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
-            padding: 18px 40px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
+            padding: 16px 40px;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
         }
+        .filter-bar label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 500; }
 
-        .month-bar label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            font-weight: 500;
-        }
-
-        .month-bar select,
-        .month-bar input[type="number"] {
-            padding: 9px 14px;
+        .filter-bar select {
+            padding: 9px 36px 9px 14px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
-            font-family: var(--font-body);
-            font-size: 14px;
-            color: var(--ink);
-            background: var(--paper);
-            outline: none;
-            cursor: pointer;
+            font-family: var(--font-body); font-size: 14px;
+            color: var(--ink); background: var(--paper);
+            outline: none; cursor: pointer;
             transition: border-color 0.2s;
-            -webkit-appearance: none;
-            appearance: none;
+            -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a897f' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
         }
-        .month-bar select:focus,
-        .month-bar input:focus { border-color: var(--ink); }
+        .filter-bar select:focus { border-color: var(--ink); }
 
-        .month-bar button {
-            padding: 9px 20px;
-            background: var(--ink);
-            color: var(--accent);
-            border: none;
-            border-radius: 10px;
-            font-family: var(--font-head);
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s;
+        .filter-divider { width: 1px; height: 28px; background: var(--border); }
+
+        /* Loading dot */
+        .loading-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--accent); margin-left: 4px;
+            animation: pulse 1s ease-in-out infinite;
+            display: none;
         }
-        .month-bar button:hover { opacity: 0.8; }
+        .loading-dot.active { display: inline-block; }
+        @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
 
-        /* ── CONTENT ─────────────────────────────── */
-        .content {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 36px 24px 72px;
-        }
+        /* ── CONTENT ── */
+        .content { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
 
-        /* ── SUMMARY CARDS ───────────────────────── */
+        /* ── SUMMARY CARDS ── */
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 36px;
+            grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+            gap: 14px; margin-bottom: 30px;
+            transition: opacity 0.2s;
         }
+        .summary-grid.dimmed { opacity: 0.4; }
+        .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 18px; }
+        .s-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+        .s-value { font-family: var(--font-head); font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .summary-card.dark { background: var(--ink); border-color: var(--ink); }
+        .summary-card.dark .s-label { color: rgba(255,255,255,0.38); }
+        .summary-card.dark .s-value { color: var(--accent); }
 
-        .summary-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 22px 20px;
-        }
-
-        .summary-card .s-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-
-        .summary-card .s-value {
-            font-family: var(--font-head);
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .summary-card.accent-card {
-            background: var(--ink);
-            border-color: var(--ink);
-        }
-        .summary-card.accent-card .s-label { color: rgba(255,255,255,0.4); }
-        .summary-card.accent-card .s-value { color: var(--accent); }
-
-        /* ── CATEGORY BREAKDOWN ──────────────────── */
-        .category-section {
-            margin-bottom: 36px;
-        }
-
-        .section-title {
-            font-family: var(--font-head);
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 14px;
-            letter-spacing: -0.2px;
-        }
-
-        .category-list {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .cat-row {
-            display: flex;
-            align-items: center;
-            padding: 14px 20px;
-            border-bottom: 1px solid #f0ede6;
-            gap: 14px;
-        }
+        /* ── CATEGORY BARS ── */
+        .section-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.2px; }
+        .category-section { margin-bottom: 30px; }
+        .category-list { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .cat-row { display: flex; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0ede6; gap: 14px; }
         .cat-row:last-child { border-bottom: none; }
+        .cat-name { flex: 1; font-size: 14px; min-width: 100px; }
+        .cat-bar-wrap { flex: 2; height: 5px; background: #ece9e0; border-radius: 10px; overflow: hidden; }
+        .cat-bar { height: 100%; background: var(--ink); border-radius: 10px; width: 0; transition: width 0.7s ease; }
+        .cat-pct { font-size: 12px; color: var(--muted); min-width: 34px; text-align: right; }
+        .cat-amount { font-family: var(--font-head); font-size: 13px; font-weight: 600; min-width: 90px; text-align: right; }
 
-        .cat-name {
-            flex: 1;
-            font-size: 14px;
-        }
+        /* ── TABLE ── */
+        .table-section { }
+        .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: opacity 0.2s; }
+        .table-card.dimmed { opacity: 0.4; pointer-events: none; }
 
-        .cat-bar-wrap {
-            flex: 2;
-            height: 5px;
-            background: #ece9e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+        .table-top-bar { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .table-top-bar h3 { font-family: var(--font-head); font-size: 15px; font-weight: 700; }
+        .entry-count { font-size: 12px; color: var(--muted); }
 
-        .cat-bar {
-            height: 100%;
-            background: var(--ink);
-            border-radius: 10px;
-            transition: width 0.6s ease;
-        }
-
-        .cat-amount {
-            font-family: var(--font-head);
-            font-size: 14px;
-            font-weight: 600;
-            min-width: 80px;
-            text-align: right;
-        }
-
-        /* ── EXPENSE TABLE ───────────────────────── */
-        .table-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            overflow: hidden;
-        }
-
-        .table-header-bar {
-            padding: 18px 22px 14px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .table-header-bar h3 {
-            font-family: var(--font-head);
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .expense-count {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
         thead th {
-            padding: 12px 20px;
-            text-align: left;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--muted);
-            font-weight: 500;
-            border-bottom: 1px solid var(--border);
-            background: #faf9f6;
+            padding: 11px 18px; text-align: left;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--muted); font-weight: 500;
+            border-bottom: 1px solid var(--border); background: #faf9f6;
+            cursor: pointer; user-select: none; white-space: nowrap;
         }
-
-        tbody tr {
-            border-bottom: 1px solid #f0ede6;
-            transition: background 0.15s;
-        }
+        thead th:hover { color: var(--ink); }
+        thead th.sorted { color: var(--ink); }
+        tbody tr { border-bottom: 1px solid #f0ede6; transition: background 0.15s; }
         tbody tr:last-child { border-bottom: none; }
         tbody tr:hover { background: #faf9f6; }
+        tbody td { padding: 13px 18px; vertical-align: middle; }
+        .amount-cell { font-family: var(--font-head); font-weight: 600; text-align: right; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 11px; background: #f0ede6; color: var(--muted); white-space: nowrap; }
+        .date-cell { color: var(--muted); font-size: 13px; white-space: nowrap; }
+        .user-cell { color: var(--muted); }
 
-        tbody td {
-            padding: 13px 20px;
-            vertical-align: middle;
+        /* ── PAGINATION ── */
+        .pagination {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; padding: 16px 22px;
+            border-top: 1px solid var(--border);
         }
+        .pg-btn {
+            padding: 7px 16px; border-radius: 8px;
+            border: 1.5px solid var(--border); background: var(--paper);
+            font-family: var(--font-body); font-size: 13px; font-weight: 500;
+            color: var(--ink); cursor: pointer; transition: background 0.15s, border-color 0.15s;
+        }
+        .pg-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--ink); }
+        .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .pg-info { font-size: 13px; color: var(--muted); padding: 0 8px; }
 
-        .amount {
-            font-family: var(--font-head);
-            font-weight: 600;
-            text-align: right;
-        }
+        /* ── SKELETON ── */
+        .skel { height: 13px; border-radius: 6px; background: linear-gradient(90deg, #f0ede6 25%, #e8e4db 50%, #f0ede6 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-        .badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 50px;
-            font-size: 11px;
-            background: #f0ede6;
-            color: var(--muted);
-        }
-
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-        }
+        /* ── EMPTY / ERROR ── */
+        .empty { text-align: center; padding: 56px 20px; }
         .empty p { color: var(--muted); font-size: 15px; }
+        .empty a { color: var(--ink); font-weight: 600; }
 
-        /* ── DELETE BUTTON ───────────────────────── */
-        .btn-del {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #ccc;
-            font-size: 16px;
-            line-height: 1;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: color 0.2s, background 0.2s;
+        /* ── MOBILE ── */
+        .mobile-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
         }
-        .btn-del:hover { color: #b83232; background: #fdf0f0; }
+        .mobile-card .mc-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .mobile-card .mc-row:last-child { margin-bottom: 0; }
+        .mc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+        .mc-val { font-size: 14px; color: var(--ink); }
+        .mc-amount { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
 
         @media (max-width: 640px) {
-            .page-header { padding: 28px 20px 32px; }
-            .month-bar { padding: 14px 20px; }
-            .content { padding: 24px 16px 56px; }
-            thead th:nth-child(3), tbody td:nth-child(3) { display: none; }
+            .page-header { padding: 28px 20px 34px; }
+            .filter-bar { padding: 14px 20px; gap: 10px; }
+            .content { padding: 20px 16px 50px; }
         }
     </style>
 </head>
@@ -337,118 +166,343 @@
 
 <div th:replace="~{headerFragment :: header}"></div>
 
-<!-- Page Header -->
 <div class="page-header">
     <p class="label">Report</p>
     <h1>Monthly expenses</h1>
 </div>
 
-<!-- Month Picker -->
-<div class="month-bar">
+<!--
+    Filter bar: dropdowns trigger fetch directly via JS (onChange).
+    NO form, NO submit button — avoids any page redirect.
+    API: GET /expense/{year}/{month}?page=&itemsPerPage=&sortField=&sortOrder=
+-->
+<div class="filter-bar">
     <label for="monthSelect">Month</label>
-    <form method="get" th:action="@{/expense/monthly}" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-        <select id="monthSelect" name="month">
-            <option value="1"  th:selected="${selectedMonth == 1}">January</option>
-            <option value="2"  th:selected="${selectedMonth == 2}">February</option>
-            <option value="3"  th:selected="${selectedMonth == 3}">March</option>
-            <option value="4"  th:selected="${selectedMonth == 4}">April</option>
-            <option value="5"  th:selected="${selectedMonth == 5}">May</option>
-            <option value="6"  th:selected="${selectedMonth == 6}">June</option>
-            <option value="7"  th:selected="${selectedMonth == 7}">July</option>
-            <option value="8"  th:selected="${selectedMonth == 8}">August</option>
-            <option value="9"  th:selected="${selectedMonth == 9}">September</option>
-            <option value="10" th:selected="${selectedMonth == 10}">October</option>
-            <option value="11" th:selected="${selectedMonth == 11}">November</option>
-            <option value="12" th:selected="${selectedMonth == 12}">December</option>
-        </select>
+    <select id="monthSelect">
+        <!-- populated by JS -->
+    </select>
 
-        <input type="number" name="year" th:value="${selectedYear}" min="2000" max="2100" style="width: 90px;">
+    <div class="filter-divider"></div>
 
-        <button type="submit">View →</button>
-    </form>
+    <label for="year-filter">Year</label>
+    <select id="year-filter">
+        <!-- populated by JS -->
+    </select>
+
+    <div class="loading-dot" id="loadingDot"></div>
 </div>
 
-<!-- Content -->
 <div class="content">
 
     <!-- Summary Cards -->
-    <div class="summary-grid" th:if="${expenses != null and !expenses.isEmpty()}">
-        <div class="summary-card accent-card">
+    <div class="summary-grid" id="summaryGrid">
+        <div class="summary-card dark">
             <p class="s-label">Total spent</p>
-            <p class="s-value" th:text="${'₹' + totalSpent}">₹0</p>
+            <p class="s-value" id="s-total">—</p>
         </div>
         <div class="summary-card">
             <p class="s-label">Transactions</p>
-            <p class="s-value" th:text="${expenses.size()}">0</p>
+            <p class="s-value" id="s-count">—</p>
         </div>
         <div class="summary-card">
-            <p class="s-label">Avg per day</p>
-            <p class="s-value" th:text="${'₹' + avgPerDay}">₹0</p>
+            <p class="s-label">Avg per entry</p>
+            <p class="s-value" id="s-avg">—</p>
         </div>
         <div class="summary-card">
             <p class="s-label">Biggest spend</p>
-            <p class="s-value" th:text="${'₹' + maxSpent}">₹0</p>
+            <p class="s-value" id="s-max">—</p>
         </div>
     </div>
 
     <!-- Category Breakdown -->
-    <div class="category-section" th:if="${categoryTotals != null and !categoryTotals.isEmpty()}">
+    <div class="category-section" id="catSection" style="display:none">
         <p class="section-title">By category</p>
-        <div class="category-list">
-            <div class="cat-row" th:each="entry : ${categoryTotals}">
-                <span class="cat-name" th:text="${entry.key}"></span>
-                <div class="cat-bar-wrap">
-                    <div class="cat-bar" th:style="'width:' + ${entry.value.pct} + '%'"></div>
-                </div>
-                <span class="cat-amount" th:text="${'₹' + entry.value.amount}"></span>
-            </div>
-        </div>
+        <div class="category-list" id="catList"></div>
     </div>
 
-    <!-- Expense Table -->
-    <div>
+    <!-- Table -->
+    <div class="table-section">
         <p class="section-title">All transactions</p>
-        <div class="table-card">
-
-            <div class="table-header-bar">
-                <h3>Expenses</h3>
-                <span class="expense-count" th:text="${expenses != null ? expenses.size() + ' entries' : '0 entries'}"></span>
-            </div>
-
-            <table th:if="${expenses != null and !expenses.isEmpty()}">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Item</th>
-                        <th>Category</th>
-                        <th>Spent by</th>
-                        <th style="text-align:right">Amount</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="expense : ${expenses}">
-                        <td th:text="${expense.date}" style="color: var(--muted); font-size: 13px;"></td>
-                        <td th:text="${expense.item}"></td>
-                        <td><span class="badge" th:text="${expense.category}"></span></td>
-                        <td th:text="${expense.spentBy}" style="color: var(--muted);"></td>
-                        <td class="amount" th:text="${'₹' + expense.spent}"></td>
-                        <td>
-                            <form th:action="@{/expense/delete/{id}(id=${expense.id})}" method="post">
-                                <button type="submit" class="btn-del" title="Delete">✕</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="empty" th:if="${expenses == null or expenses.isEmpty()}">
-                <p>No expenses found for this month.</p>
-            </div>
+        <div class="table-card" id="tableCard">
+            <div class="empty"><p>Loading…</p></div>
         </div>
     </div>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ── State (mirrors original JS exactly) ──────────────────────────
+    let currentPage     = 1;
+    const itemsPerPage  = 10;
+    let currentSortField = null;
+    let currentSortOrder = 1;   // 1 = asc, -1 = desc
+    let data            = [];
+    let isMobileView    = window.innerWidth <= 768;
+
+    const categoryLabels = {
+        GROCERIES: 'Groceries',
+        VEGETABLES_FRUITS_DAIRY_AND_MEAT: 'Vegetables, Fruits, Dairy & Meat',
+        MEDICAL: 'Medical',
+        OUTSIDE_FOOD: 'Outside Food',
+        LOSE_OF_MONEY: 'Loss of Money',
+        SALON_AND_COSMETICS: 'Salon & Cosmetics',
+        TRANSPORT: 'Transport',
+        SHOPPING: 'Shopping',
+        ENTERTAINMENT: 'Entertainment',
+        RENT_AND_OTHER_BILLS: 'Rent & Bills',
+        INVESTMENTS: 'Investments',
+        OTHERS: 'Others'
+    };
+
+    // ── DOM refs ─────────────────────────────────────────────────────
+    const monthSelect  = document.getElementById('monthSelect');
+    const yearFilter   = document.getElementById('year-filter');
+    const tableCard    = document.getElementById('tableCard');
+    const loadingDot   = document.getElementById('loadingDot');
+    const summaryGrid  = document.getElementById('summaryGrid');
+
+    // ── Init dropdowns ───────────────────────────────────────────────
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    months.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.toUpperCase();
+        opt.textContent = m;
+        monthSelect.appendChild(opt);
+    });
+
+    // Restore saved month or default to current
+    const savedMonth = localStorage.getItem('selectedMonth');
+    monthSelect.value = savedMonth || months[new Date().getMonth()].toUpperCase();
+
+    // Year dropdown (2022 → current year)
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear; y >= 2022; y--) {
+        const opt = document.createElement('option');
+        opt.value = y; opt.textContent = y;
+        yearFilter.appendChild(opt);
+    }
+    yearFilter.value = currentYear;
+
+    // ── Event listeners: onChange triggers fetch directly (no redirect) ──
+    monthSelect.addEventListener('change', () => {
+        localStorage.setItem('selectedMonth', monthSelect.value);
+        currentPage = 1;
+        fetchExpenseData();
+    });
+    yearFilter.addEventListener('change', () => {
+        currentPage = 1;
+        fetchExpenseData();
+    });
+
+    window.addEventListener('resize', () => {
+        isMobileView = window.innerWidth <= 768;
+        renderTransactions(data);
+    });
+
+    // ── Core fetch — same URL pattern as the original JS ─────────────
+    // GET /expense/{year}/{month}?page=&itemsPerPage=&sortField=&sortOrder=
+    function fetchExpenseData() {
+        let selectedYear  = yearFilter.value || currentYear;
+        const selectedMonth = monthSelect.value;
+
+        const apiUrl = `/expense/${selectedYear}/${selectedMonth}` +
+            `?page=${currentPage}` +
+            `&itemsPerPage=${itemsPerPage}` +
+            `&sortField=${currentSortField || ''}` +
+            `&sortOrder=${currentSortOrder === 1 ? 'asc' : 'desc'}`;
+
+        loadingDot.classList.add('active');
+        tableCard.classList.add('dimmed');
+        summaryGrid.classList.add('dimmed');
+
+        fetch(apiUrl)
+            .then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            })
+            .then(res => {
+                if (res.success) {
+                    data = res.data || [];
+                } else {
+                    throw new Error(res.message || 'Unknown error');
+                }
+                renderAll(data);
+            })
+            .catch(err => {
+                console.error('Fetch error:', err);
+                data = [];
+                tableCard.innerHTML = `<div class="empty"><p>Error loading data: ${err.message}</p></div>`;
+            })
+            .finally(() => {
+                loadingDot.classList.remove('active');
+                tableCard.classList.remove('dimmed');
+                summaryGrid.classList.remove('dimmed');
+            });
+    }
+
+    // ── Render all sections ──────────────────────────────────────────
+    function renderAll(expenses) {
+        renderSummary(expenses);
+        renderCategories(expenses);
+        renderTransactions(expenses);
+    }
+
+    function renderSummary(expenses) {
+        if (!expenses.length) {
+            document.getElementById('s-total').textContent = '₹0';
+            document.getElementById('s-count').textContent = '0';
+            document.getElementById('s-avg').textContent   = '—';
+            document.getElementById('s-max').textContent   = '—';
+            return;
+        }
+        const total = expenses.reduce((s, e) => s + (e.spent || 0), 0);
+        const max   = Math.max(...expenses.map(e => e.spent || 0));
+        document.getElementById('s-total').textContent = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits:0});
+        document.getElementById('s-count').textContent = expenses.length;
+        document.getElementById('s-avg').textContent   = '₹' + Math.round(total / expenses.length).toLocaleString('en-IN');
+        document.getElementById('s-max').textContent   = '₹' + max.toLocaleString('en-IN', {maximumFractionDigits:0});
+    }
+
+    function renderCategories(expenses) {
+        if (!expenses.length) { document.getElementById('catSection').style.display = 'none'; return; }
+
+        const totals = {};
+        expenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + (e.spent || 0); });
+        const sorted  = Object.entries(totals).sort((a,b) => b[1] - a[1]);
+        const grandTotal = expenses.reduce((s,e) => s + (e.spent||0), 0);
+        const maxAmt  = sorted[0][1];
+
+        document.getElementById('catList').innerHTML = sorted.map(([cat, amt]) => `
+            <div class="cat-row">
+                <span class="cat-name">${categoryLabels[cat] || cat}</span>
+                <div class="cat-bar-wrap">
+                    <div class="cat-bar" style="width:${Math.round((amt/maxAmt)*100)}%"></div>
+                </div>
+                <span class="cat-pct">${Math.round((amt/grandTotal)*100)}%</span>
+                <span class="cat-amount">₹${amt.toLocaleString('en-IN', {maximumFractionDigits:0})}</span>
+            </div>`).join('');
+
+        document.getElementById('catSection').style.display = 'block';
+    }
+
+    // ── Render table (desktop) or cards (mobile) ─────────────────────
+    function renderTransactions(expenses) {
+        if (isMobileView) renderMobile(expenses);
+        else renderDesktop(expenses);
+    }
+
+    function renderMobile(expenses) {
+        if (!expenses.length) {
+            tableCard.innerHTML = `<div class="empty"><p>No expenses this month. <a href="/new">Add one →</a></p></div>`;
+            return;
+        }
+        tableCard.innerHTML = `
+            <div class="table-top-bar">
+                <h3>Transactions</h3>
+                <span class="entry-count">${expenses.length} entries · page ${currentPage}</span>
+            </div>
+            <div style="padding:14px 16px">
+                ${expenses.map(e => `
+                <div class="mobile-card">
+                    <div class="mc-row">
+                        <span class="mc-label">Item</span>
+                        <span class="mc-amount">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                    </div>
+                    <div class="mc-row">
+                        <span class="mc-val" style="font-weight:500">${e.item||''}</span>
+                        <span class="badge">${categoryLabels[e.category]||e.category}</span>
+                    </div>
+                    <div class="mc-row" style="margin-top:4px">
+                        <span class="mc-label">${e.date||''}</span>
+                        <span class="user-cell" style="font-size:13px">${e.spentBy||''}</span>
+                    </div>
+                </div>`).join('')}
+            </div>
+            ${paginationHTML()}`;
+        attachPaginationListeners();
+    }
+
+    function renderDesktop(expenses) {
+        if (!expenses.length) {
+            tableCard.innerHTML = `<div class="empty"><p>No expenses this month. <a href="/new">Add one →</a></p></div>`;
+            return;
+        }
+
+        const sortIcon = (field) => {
+            if (currentSortField !== field) return '';
+            return currentSortOrder === 1 ? ' ▲' : ' ▼';
+        };
+
+        tableCard.innerHTML = `
+            <div class="table-top-bar">
+                <h3>Transactions</h3>
+                <span class="entry-count">${expenses.length} entries · page ${currentPage}</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="sortable${currentSortField==='date'?' sorted':''}" data-field="date">Date${sortIcon('date')}</th>
+                        <th class="sortable${currentSortField==='item'?' sorted':''}" data-field="item">Item${sortIcon('item')}</th>
+                        <th class="sortable${currentSortField==='category'?' sorted':''}" data-field="category">Category${sortIcon('category')}</th>
+                        <th class="sortable${currentSortField==='spentBy'?' sorted':''}" data-field="spentBy">Spent by${sortIcon('spentBy')}</th>
+                        <th class="sortable${currentSortField==='spent'?' sorted':''}" data-field="spent" style="text-align:right">Amount${sortIcon('spent')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${expenses.map(e => `
+                    <tr>
+                        <td class="date-cell">${e.date||''}</td>
+                        <td>${e.item||''}</td>
+                        <td><span class="badge">${categoryLabels[e.category]||e.category}</span></td>
+                        <td class="user-cell">${e.spentBy||''}</td>
+                        <td class="amount-cell">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+            ${paginationHTML()}`;
+
+        // Sort on header click — delegates to backend (same as original)
+        tableCard.querySelectorAll('thead th[data-field]').forEach(th => {
+            th.addEventListener('click', () => {
+                if (currentSortField === th.dataset.field) {
+                    currentSortOrder *= -1;
+                } else {
+                    currentSortField = th.dataset.field;
+                    currentSortOrder = 1;
+                }
+                currentPage = 1;
+                fetchExpenseData();
+            });
+        });
+
+        attachPaginationListeners();
+    }
+
+    // ── Pagination ───────────────────────────────────────────────────
+    function paginationHTML() {
+        const isFirst  = currentPage === 1;
+        const isLast   = data.length < itemsPerPage;
+        return `
+        <div class="pagination">
+            <button class="pg-btn" id="pgPrev" ${isFirst?'disabled':''}>← Prev</button>
+            <span class="pg-info">Page ${currentPage}</span>
+            <button class="pg-btn" id="pgNext" ${isLast?'disabled':''}>Next →</button>
+        </div>`;
+    }
+
+    function attachPaginationListeners() {
+        const prev = document.getElementById('pgPrev');
+        const next = document.getElementById('pgNext');
+        if (prev) prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; fetchExpenseData(); } });
+        if (next) next.addEventListener('click', () => { currentPage++; fetchExpenseData(); });
+    }
+
+    // ── Initial load ─────────────────────────────────────────────────
+    fetchExpenseData();
+});
+</script>
 
 </body>
 </html>
