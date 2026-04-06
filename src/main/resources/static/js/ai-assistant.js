@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const askBtn = document.getElementById('askAiSubmit');
     const input = document.getElementById('askAiInput');
     const output = document.getElementById('askAiOutput');
+    const suggestions = document.getElementById('askAiSuggestions');
 
     if (!openBtn || !panel || !closeBtn || !askBtn || !input || !output) {
         return;
@@ -24,6 +25,14 @@ document.addEventListener('DOMContentLoaded', function () {
         askBtn.textContent = isLoading ? 'Thinking...' : 'Ask';
     }
 
+    function pushMessage(role, text) {
+        const item = document.createElement('div');
+        item.className = 'ai-msg ' + role;
+        item.textContent = text;
+        output.appendChild(item);
+        output.scrollTop = output.scrollHeight;
+    }
+
     function currentMonthEnum() {
         const months = [
             'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -35,12 +44,13 @@ document.addEventListener('DOMContentLoaded', function () {
     async function askAi() {
         const question = input.value.trim();
         if (!question) {
-            output.textContent = 'Please type a question first.';
+            pushMessage('bot', 'Please type a question first.');
             return;
         }
 
         setLoading(true);
-        output.textContent = 'Analyzing your expense data...';
+        pushMessage('user', question);
+        pushMessage('bot', 'Analyzing your expense data...');
 
         const payload = {
             question: question,
@@ -60,9 +70,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error(result.message || 'Could not get AI response');
             }
 
-            output.textContent = result.data.answer || 'No response generated.';
+            const lastBot = output.querySelector('.ai-msg.bot:last-child');
+            if (lastBot) {
+                lastBot.textContent = result.data.answer || 'No response generated.';
+            } else {
+                pushMessage('bot', result.data.answer || 'No response generated.');
+            }
+            input.value = '';
         } catch (error) {
-            output.textContent = 'Error: ' + error.message;
+            const lastBot = output.querySelector('.ai-msg.bot:last-child');
+            if (lastBot) {
+                lastBot.textContent = 'Error: ' + error.message;
+            } else {
+                pushMessage('bot', 'Error: ' + error.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -71,6 +92,17 @@ document.addEventListener('DOMContentLoaded', function () {
     openBtn.addEventListener('click', openPanel);
     closeBtn.addEventListener('click', closePanel);
     askBtn.addEventListener('click', askAi);
+
+    if (suggestions) {
+        suggestions.addEventListener('click', function (event) {
+            const button = event.target.closest('.ai-suggestion');
+            if (!button) {
+                return;
+            }
+            input.value = button.textContent || '';
+            askAi();
+        });
+    }
 
     input.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' && !event.shiftKey) {

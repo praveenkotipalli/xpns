@@ -111,8 +111,8 @@
         right: 20px;
         bottom: 72px;
         width: min(360px, calc(100vw - 28px));
-        background: #ffffff;
-        border: 1px solid #e0ddd5;
+        background: var(--surface);
+        border: 1px solid var(--border);
         border-radius: 14px;
         box-shadow: 0 20px 38px rgba(0, 0, 0, 0.2);
         z-index: 1201;
@@ -128,15 +128,16 @@
         justify-content: space-between;
         align-items: center;
         padding: 12px 14px;
-        border-bottom: 1px solid #f0ede6;
+        border-bottom: 1px solid var(--border);
         font-family: 'Syne', sans-serif;
         font-weight: 600;
+        color: var(--ink);
     }
 
     .ai-panel-close {
         border: none;
         background: transparent;
-        color: #8a897f;
+        color: var(--muted);
         font-size: 18px;
         line-height: 1;
         cursor: pointer;
@@ -145,23 +146,30 @@
     .ai-panel-body {
         padding: 12px 14px 14px;
         font-family: 'DM Sans', sans-serif;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: 420px;
     }
 
     #askAiInput {
         width: 100%;
-        min-height: 76px;
-        resize: vertical;
-        border: 1px solid #e0ddd5;
+        min-height: 44px;
+        max-height: 100px;
+        resize: none;
+        border: 1px solid var(--border);
         border-radius: 10px;
         padding: 10px 11px;
         font-family: inherit;
         font-size: 14px;
+        background: #fff;
+        color: #0d0d0d;
     }
 
     .ai-panel-actions {
-        margin-top: 10px;
         display: flex;
         justify-content: flex-end;
+        gap: 8px;
     }
 
     #askAiSubmit {
@@ -181,14 +189,57 @@
     }
 
     #askAiOutput {
-        margin-top: 11px;
         font-size: 13px;
-        color: #2d2d2d;
+        color: var(--ink);
         white-space: pre-wrap;
         line-height: 1.45;
-        max-height: 250px;
+        flex: 1;
         overflow: auto;
         padding-right: 2px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border: 1px solid #f0ede6;
+        border-radius: 10px;
+        padding: 10px;
+        background: #faf9f6;
+    }
+
+    .ai-msg {
+        padding: 8px 10px;
+        border-radius: 10px;
+        max-width: 90%;
+        font-size: 13px;
+        white-space: pre-wrap;
+    }
+
+    .ai-msg.user {
+        align-self: flex-end;
+        background: #0d0d0d;
+        color: #c8f04a;
+    }
+
+    .ai-msg.bot {
+        align-self: flex-start;
+        background: color-mix(in srgb, var(--paper) 85%, #ffffff 15%);
+        border: 1px solid var(--border);
+        color: var(--ink);
+    }
+
+    .ai-suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .ai-suggestion {
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        padding: 5px 8px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 11px;
     }
 </style>
 
@@ -200,11 +251,18 @@
         <button id="closeAiPanel" class="ai-panel-close" type="button">&times;</button>
     </div>
     <div class="ai-panel-body">
-        <textarea id="askAiInput" placeholder="Ask: who spent more this month, and how can we reduce expenses?"></textarea>
+        <div id="askAiOutput">
+            <div class="ai-msg bot">Ask anything about this month's spending.</div>
+        </div>
+        <div class="ai-suggestions" id="askAiSuggestions">
+            <button type="button" class="ai-suggestion">Who spent more this month?</button>
+            <button type="button" class="ai-suggestion">Where can I save 20%?</button>
+            <button type="button" class="ai-suggestion">Top 3 wasteful categories</button>
+        </div>
+        <textarea id="askAiInput" placeholder="Type your question..."></textarea>
         <div class="ai-panel-actions">
             <button id="askAiSubmit" type="button">Ask</button>
         </div>
-        <div id="askAiOutput">Ask anything about this month's spending.</div>
     </div>
 </div>
 
