@@ -35,3 +35,9 @@ logging:
   level:
     org.springframework.web: DEBUG
     org.flywaydb: DEBUG
+
+ai:
+  ollama:
+    enabled: true
+    base-url: http://localhost:11434
+    model: llama3.2:3b

@@ -12,9 +12,11 @@ import java.util.*;
 @Service
 public class AiInsightsService {
     private final ExpenseService expenseService;
+    private final OllamaService ollamaService;
 
-    public AiInsightsService(ExpenseService expenseService) {
+    public AiInsightsService(ExpenseService expenseService, OllamaService ollamaService) {
         this.expenseService = expenseService;
+        this.ollamaService = ollamaService;
     }
 
     public String answerQuestion(String question, Integer year, Month month) {
@@ -37,6 +39,12 @@ public class AiInsightsService {
         double previousTotal = total(previousExpenses);
         Map<String, Double> spentByTotals = totalsBySpentBy(currentExpenses);
         Map<String, Double> categoryTotals = totalsByCategory(currentExpenses);
+        String llmContext = buildContext(question, currentPeriod, previousPeriod, currentTotal, previousTotal, spentByTotals, categoryTotals);
+
+        Optional<String> llmAnswer = ollamaService.generate(llmContext);
+        if (llmAnswer.isPresent()) {
+            return llmAnswer.get();
+        }
 
         String normalizedQuestion = question == null ? "" : question.toLowerCase(Locale.ROOT);
         StringBuilder response = new StringBuilder();
@@ -55,6 +63,39 @@ public class AiInsightsService {
         appendSavingsTips(response, categoryTotals, spentByTotals, currentTotal);
 
         return response.toString().trim();
+    }
+
+    private String buildContext(String question,
+                                YearMonth currentPeriod,
+                                YearMonth previousPeriod,
+                                double currentTotal,
+                                double previousTotal,
+                                Map<String, Double> spentByTotals,
+                                Map<String, Double> categoryTotals) {
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("You are a concise expense analysis assistant.\n")
+                .append("Rules:\n")
+                .append("- Use only the provided data.\n")
+                .append("- If data is missing, say so clearly.\n")
+                .append("- Keep answer under 160 words.\n")
+                .append("- Include practical saving tips.\n\n")
+                .append("User question: ").append(question == null ? "" : question).append("\n\n")
+                .append("Data:\n")
+                .append("Current month: ").append(readableMonth(currentPeriod)).append("\n")
+                .append("Current total: ").append(inr(currentTotal)).append("\n")
+                .append("Previous month: ").append(readableMonth(previousPeriod)).append("\n")
+                .append("Previous total: ").append(inr(previousTotal)).append("\n")
+                .append("Spent by:\n");
+
+        for (Map.Entry<String, Double> entry : spentByTotals.entrySet()) {
+            prompt.append("- ").append(entry.getKey()).append(": ").append(inr(entry.getValue())).append("\n");
+        }
+
+        prompt.append("Category totals:\n");
+        for (Map.Entry<String, Double> entry : categoryTotals.entrySet()) {
+            prompt.append("- ").append(humanizeCategory(entry.getKey())).append(": ").append(inr(entry.getValue())).append("\n");
+        }
+        return prompt.toString();
     }
 
     private YearMonth resolvePeriod(Integer year, Month month) {
