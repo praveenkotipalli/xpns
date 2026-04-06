@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Dashboard — xpns.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0d0d0d;
+            --paper: #f5f3ee;
+            --surface: #ffffff;
+            --accent: #c8f04a;
+            --muted: #8a897f;
+            --border: #e0ddd5;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        body { background: var(--paper); font-family: var(--font-body); color: var(--ink); min-height: 100vh; }
+
+        /* HERO */
+        .hero {
+            background: var(--ink);
+            color: #fff;
+            padding: 52px 40px 56px;
+        }
+        .hero .label {
+            font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.35); margin-bottom: 10px;
+        }
+        .hero h1 {
+            font-family: var(--font-head);
+            font-size: clamp(34px, 5.5vw, 60px);
+            font-weight: 700; letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 18px;
+        }
+        .hero h1 em { font-style: normal; color: var(--accent); }
+        .hero p { font-size: 15px; color: rgba(255,255,255,0.45); max-width: 420px; line-height: 1.65; margin-bottom: 30px; }
+
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn {
+            display: inline-block; padding: 12px 22px; border-radius: 50px;
+            font-family: var(--font-head); font-size: 13px; font-weight: 700;
+            text-decoration: none; transition: transform 0.15s, opacity 0.15s;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: var(--accent); color: var(--ink); }
+        .btn-outline { background: transparent; color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.2); }
+        .btn-outline:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+
+        /* STATS STRIP */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1px; background: var(--border);
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+        }
+        .stat-box { background: var(--surface); padding: 26px 28px; }
+        .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 8px; }
+        .stat-value { font-family: var(--font-head); font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+        .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        /* CONTENT */
+        .content { max-width: 1080px; margin: 0 auto; padding: 36px 24px 64px; }
+
+        .section-head {
+            display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px;
+        }
+        .section-head h2 { font-family: var(--font-head); font-size: 17px; font-weight: 700; letter-spacing: -0.2px; }
+        .section-head a { font-size: 13px; color: var(--muted); text-decoration: none; }
+        .section-head a:hover { color: var(--ink); }
+
+        /* TABLE CARD */
+        .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th {
+            padding: 12px 20px; text-align: left;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--muted); font-weight: 500;
+            border-bottom: 1px solid var(--border); background: #faf9f6;
+        }
+        tbody tr { border-bottom: 1px solid #f0ede6; transition: background 0.15s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #faf9f6; }
+        tbody td { padding: 13px 20px; vertical-align: middle; }
+
+        .amount { font-family: var(--font-head); font-weight: 600; text-align: right; }
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 50px;
+            font-size: 11px; background: #f0ede6; color: var(--muted);
+        }
+        .date-cell { color: var(--muted); font-size: 13px; }
+        .user-cell { color: var(--muted); }
+
+        /* SKELETON */
+        .skeleton-row td { padding: 14px 20px; }
+        .skel {
+            height: 14px; border-radius: 6px;
+            background: linear-gradient(90deg, #f0ede6 25%, #e8e4db 50%, #f0ede6 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* EMPTY */
+        .empty { text-align: center; padding: 56px 20px; }
+        .empty p { color: var(--muted); font-size: 15px; }
+        .empty-icon { font-size: 36px; opacity: 0.35; margin-bottom: 12px; }
+
+        @media (max-width: 640px) {
+            .hero { padding: 36px 20px 40px; }
+            .content { padding: 24px 16px 48px; }
+            thead th:nth-child(3), tbody td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{headerFragment :: header}"></div>
+
+<!-- Hero -->
+<section class="hero">
+    <p class="label">Your finances</p>
+    <h1>Know where every<br><em>rupee goes.</em></h1>
+    <p>Track, categorise, and understand your spending — all in one place.</p>
+    <div class="hero-actions">
+        <a href="/new" class="btn btn-primary">+ Add Expense</a>
+        <a href="/expenses" class="btn btn-outline">View by Month</a>
+    </div>
+</section>
+
+<!-- Stats (populated by JS) -->
+<div class="stats-strip">
+    <div class="stat-box">
+        <p class="stat-label">This month</p>
+        <p class="stat-value" id="stat-total">—</p>
+        <p class="stat-sub">total spent</p>
+    </div>
+    <div class="stat-box">
+        <p class="stat-label">Transactions</p>
+        <p class="stat-value" id="stat-count">—</p>
+        <p class="stat-sub">this month</p>
+    </div>
+    <div class="stat-box">
+        <p class="stat-label">Top category</p>
+        <p class="stat-value" id="stat-top-cat" style="font-size:18px;">—</p>
+        <p class="stat-sub">by amount</p>
+    </div>
+    <div class="stat-box">
+        <p class="stat-label">Avg per day</p>
+        <p class="stat-value" id="stat-avg">—</p>
+        <p class="stat-sub">this month</p>
+    </div>
+</div>
+
+<!-- Recent Expenses -->
+<div class="content">
+    <div class="section-head">
+        <h2>Recent expenses</h2>
+        <a href="/expenses">See all →</a>
+    </div>
+
+    <div class="table-card" id="tableWrap">
+        <!-- Skeleton loader -->
+        <table id="skeletonTable">
+            <thead>
+                <tr>
+                    <th>Date</th><th>Item</th><th>Category</th><th>Spent by</th><th style="text-align:right">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="skeleton-row" th:each="i : ${#numbers.sequence(1,5)}">
+                    <td><div class="skel" style="width:70px"></div></td>
+                    <td><div class="skel" style="width:140px"></div></td>
+                    <td><div class="skel" style="width:90px"></div></td>
+                    <td><div class="skel" style="width:60px"></div></td>
+                    <td><div class="skel" style="width:60px;margin-left:auto"></div></td>
+                </tr>
+                <tr class="skeleton-row"><td><div class="skel" style="width:70px"></div></td><td><div class="skel" style="width:180px"></div></td><td><div class="skel" style="width:80px"></div></td><td><div class="skel" style="width:50px"></div></td><td><div class="skel" style="width:60px;margin-left:auto"></div></td></tr>
+                <tr class="skeleton-row"><td><div class="skel" style="width:70px"></div></td><td><div class="skel" style="width:110px"></div></td><td><div class="skel" style="width:100px"></div></td><td><div class="skel" style="width:70px"></div></td><td><div class="skel" style="width:60px;margin-left:auto"></div></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Month enum names (matches your Month enum — adjust if different)
+    const MONTH_NAMES = [
+        '', 'JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
+        'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'
+    ];
+
+    const now   = new Date();
+    const year  = now.getFullYear();
+    const month = MONTH_NAMES[now.getMonth() + 1]; // 1-indexed
+
+    // GET /expense/{year}/{month}
+    fetch(`/expense/${year}/${month}`)
+        .then(r => r.json())
+        .then(res => {
+            const expenses = res.data || [];
+            renderStats(expenses);
+            renderTable(expenses);
+        })
+        .catch(err => {
+            console.error('Failed to load expenses:', err);
+            renderTable([]);
+        });
+
+    function renderStats(expenses) {
+        const total = expenses.reduce((s, e) => s + (e.spent || 0), 0);
+        const days  = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+        // Top category
+        const catTotals = {};
+        expenses.forEach(e => {
+            catTotals[e.category] = (catTotals[e.category] || 0) + e.spent;
+        });
+        const topCat = Object.entries(catTotals).sort((a,b) => b[1]-a[1])[0];
+
+        document.getElementById('stat-total').textContent  = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits:0});
+        document.getElementById('stat-count').textContent  = expenses.length;
+        document.getElementById('stat-top-cat').textContent = topCat ? fmtCat(topCat[0]) : '—';
+        document.getElementById('stat-avg').textContent    = '₹' + Math.round(total / days).toLocaleString('en-IN');
+    }
+
+    function fmtCat(key) {
+        // Turn OUTSIDE_FOOD → Outside Food
+        return key.replace(/_/g,' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function renderTable(expenses) {
+        const wrap = document.getElementById('tableWrap');
+
+        if (expenses.length === 0) {
+            wrap.innerHTML = `<div class="empty">
+                <div class="empty-icon">📭</div>
+                <p>No expenses this month. <a href="/new" style="color:var(--ink);font-weight:600;">Add one →</a></p>
+            </div>`;
+            return;
+        }
+
+        // Show last 10 most recent
+        const recent = [...expenses].slice(-10).reverse();
+
+        wrap.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Item</th>
+                    <th>Category</th>
+                    <th>Spent by</th>
+                    <th style="text-align:right">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${recent.map(e => `
+                <tr>
+                    <td class="date-cell">${e.date || ''}</td>
+                    <td>${e.item || ''}</td>
+                    <td><span class="badge">${fmtCat(e.category || '')}</span></td>
+                    <td class="user-cell">${e.spentBy || ''}</td>
+                    <td class="amount">₹${(e.spent || 0).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                </tr>`).join('')}
+            </tbody>
+        </table>`;
+    }
+</script>
+
+</body>
+</html>

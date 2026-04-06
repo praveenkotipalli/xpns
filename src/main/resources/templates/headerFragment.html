@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:fragment="headerStyles">
+        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --ink: #0d0d0d;
+                --paper: #f5f3ee;
+                --surface: #ffffff;
+                --accent: #c8f04a;
+                --muted: #8a897f;
+                --border: #e0ddd5;
+                --font-head: 'Syne', sans-serif;
+                --font-body: 'DM Sans', sans-serif;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<header th:fragment="header" style="
+    background: #0d0d0d;
+    color: #fff;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    font-family: 'DM Sans', sans-serif;
+">
+    <a th:href="@{/}" style="text-decoration:none;">
+        <span style="font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px;">
+            xpns<span style="color: #c8f04a;">.</span>
+        </span>
+    </a>
+
+    <nav style="display: flex; align-items: center; gap: 6px;">
+        <a th:href="@{/}" style="
+            color: rgba(255,255,255,0.55);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 7px 14px;
+            border-radius: 50px;
+            transition: background 0.2s, color 0.2s;
+        "
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff'"
+        onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.55)'">
+            Dashboard
+        </a>
+
+        <a th:href="@{/new}" style="
+            color: rgba(255,255,255,0.55);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 7px 14px;
+            border-radius: 50px;
+            transition: background 0.2s, color 0.2s;
+        "
+        onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#fff'"
+        onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.55)'">
+            Add Expense
+        </a>
+
+        <a th:href="@{/expense/monthly}" style="
+            background: #c8f04a;
+            color: #0d0d0d;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 50px;
+            font-family: 'Syne', sans-serif;
+            margin-left: 4px;
+        ">
+            Monthly →
+        </a>
+    </nav>
+</header>
+
+</body>
+</html>

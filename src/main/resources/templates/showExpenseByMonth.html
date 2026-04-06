@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Monthly Expenses — xpns.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0d0d0d;
+            --paper: #f5f3ee;
+            --surface: #ffffff;
+            --accent: #c8f04a;
+            --muted: #8a897f;
+            --border: #e0ddd5;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: var(--font-body);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ─────────────────────────────── */
+        header {
+            background: var(--ink);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .brand {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+        .brand span { color: var(--accent); }
+        nav a {
+            color: rgba(255,255,255,0.55);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 7px 14px;
+            border-radius: 50px;
+            transition: background 0.2s, color 0.2s;
+            margin-left: 4px;
+        }
+        nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        nav a.cta { background: var(--accent); color: var(--ink); font-family: var(--font-head); font-weight: 600; }
+
+        /* ── PAGE HEADER ─────────────────────────── */
+        .page-header {
+            background: var(--ink);
+            color: #fff;
+            padding: 40px 40px 44px;
+        }
+
+        .page-header .label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-head);
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        /* ── MONTH PICKER ────────────────────────── */
+        .month-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .month-bar label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .month-bar select,
+        .month-bar input[type="number"] {
+            padding: 9px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--ink);
+            background: var(--paper);
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .month-bar select:focus,
+        .month-bar input:focus { border-color: var(--ink); }
+
+        .month-bar button {
+            padding: 9px 20px;
+            background: var(--ink);
+            color: var(--accent);
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-head);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .month-bar button:hover { opacity: 0.8; }
+
+        /* ── CONTENT ─────────────────────────────── */
+        .content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 24px 72px;
+        }
+
+        /* ── SUMMARY CARDS ───────────────────────── */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px 20px;
+        }
+
+        .summary-card .s-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .summary-card .s-value {
+            font-family: var(--font-head);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .summary-card.accent-card {
+            background: var(--ink);
+            border-color: var(--ink);
+        }
+        .summary-card.accent-card .s-label { color: rgba(255,255,255,0.4); }
+        .summary-card.accent-card .s-value { color: var(--accent); }
+
+        /* ── CATEGORY BREAKDOWN ──────────────────── */
+        .category-section {
+            margin-bottom: 36px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .category-list {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .cat-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0ede6;
+            gap: 14px;
+        }
+        .cat-row:last-child { border-bottom: none; }
+
+        .cat-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .cat-bar-wrap {
+            flex: 2;
+            height: 5px;
+            background: #ece9e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cat-bar {
+            height: 100%;
+            background: var(--ink);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        .cat-amount {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* ── EXPENSE TABLE ───────────────────────── */
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .table-header-bar {
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header-bar h3 {
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .expense-count {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead th {
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            background: #faf9f6;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0ede6;
+            transition: background 0.15s;
+        }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #faf9f6; }
+
+        tbody td {
+            padding: 13px 20px;
+            vertical-align: middle;
+        }
+
+        .amount {
+            font-family: var(--font-head);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 11px;
+            background: #f0ede6;
+            color: var(--muted);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty p { color: var(--muted); font-size: 15px; }
+
+        /* ── DELETE BUTTON ───────────────────────── */
+        .btn-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ccc;
+            font-size: 16px;
+            line-height: 1;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .btn-del:hover { color: #b83232; background: #fdf0f0; }
+
+        @media (max-width: 640px) {
+            .page-header { padding: 28px 20px 32px; }
+            .month-bar { padding: 14px 20px; }
+            .content { padding: 24px 16px 56px; }
+            thead th:nth-child(3), tbody td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{headerFragment :: header}"></div>
+
+<!-- Page Header -->
+<div class="page-header">
+    <p class="label">Report</p>
+    <h1>Monthly expenses</h1>
+</div>
+
+<!-- Month Picker -->
+<div class="month-bar">
+    <label for="monthSelect">Month</label>
+    <form method="get" th:action="@{/expense/monthly}" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <select id="monthSelect" name="month">
+            <option value="1"  th:selected="${selectedMonth == 1}">January</option>
+            <option value="2"  th:selected="${selectedMonth == 2}">February</option>
+            <option value="3"  th:selected="${selectedMonth == 3}">March</option>
+            <option value="4"  th:selected="${selectedMonth == 4}">April</option>
+            <option value="5"  th:selected="${selectedMonth == 5}">May</option>
+            <option value="6"  th:selected="${selectedMonth == 6}">June</option>
+            <option value="7"  th:selected="${selectedMonth == 7}">July</option>
+            <option value="8"  th:selected="${selectedMonth == 8}">August</option>
+            <option value="9"  th:selected="${selectedMonth == 9}">September</option>
+            <option value="10" th:selected="${selectedMonth == 10}">October</option>
+            <option value="11" th:selected="${selectedMonth == 11}">November</option>
+            <option value="12" th:selected="${selectedMonth == 12}">December</option>
+        </select>
+
+        <input type="number" name="year" th:value="${selectedYear}" min="2000" max="2100" style="width: 90px;">
+
+        <button type="submit">View →</button>
+    </form>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+    <!-- Summary Cards -->
+    <div class="summary-grid" th:if="${expenses != null and !expenses.isEmpty()}">
+        <div class="summary-card accent-card">
+            <p class="s-label">Total spent</p>
+            <p class="s-value" th:text="${'₹' + totalSpent}">₹0</p>
+        </div>
+        <div class="summary-card">
+            <p class="s-label">Transactions</p>
+            <p class="s-value" th:text="${expenses.size()}">0</p>
+        </div>
+        <div class="summary-card">
+            <p class="s-label">Avg per day</p>
+            <p class="s-value" th:text="${'₹' + avgPerDay}">₹0</p>
+        </div>
+        <div class="summary-card">
+            <p class="s-label">Biggest spend</p>
+            <p class="s-value" th:text="${'₹' + maxSpent}">₹0</p>
+        </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="category-section" th:if="${categoryTotals != null and !categoryTotals.isEmpty()}">
+        <p class="section-title">By category</p>
+        <div class="category-list">
+            <div class="cat-row" th:each="entry : ${categoryTotals}">
+                <span class="cat-name" th:text="${entry.key}"></span>
+                <div class="cat-bar-wrap">
+                    <div class="cat-bar" th:style="'width:' + ${entry.value.pct} + '%'"></div>
+                </div>
+                <span class="cat-amount" th:text="${'₹' + entry.value.amount}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Table -->
+    <div>
+        <p class="section-title">All transactions</p>
+        <div class="table-card">
+
+            <div class="table-header-bar">
+                <h3>Expenses</h3>
+                <span class="expense-count" th:text="${expenses != null ? expenses.size() + ' entries' : '0 entries'}"></span>
+            </div>
+
+            <table th:if="${expenses != null and !expenses.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Item</th>
+                        <th>Category</th>
+                        <th>Spent by</th>
+                        <th style="text-align:right">Amount</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="expense : ${expenses}">
+                        <td th:text="${expense.date}" style="color: var(--muted); font-size: 13px;"></td>
+                        <td th:text="${expense.item}"></td>
+                        <td><span class="badge" th:text="${expense.category}"></span></td>
+                        <td th:text="${expense.spentBy}" style="color: var(--muted);"></td>
+                        <td class="amount" th:text="${'₹' + expense.spent}"></td>
+                        <td>
+                            <form th:action="@{/expense/delete/{id}(id=${expense.id})}" method="post">
+                                <button type="submit" class="btn-del" title="Delete">✕</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="empty" th:if="${expenses == null or expenses.isEmpty()}">
+                <p>No expenses found for this month.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

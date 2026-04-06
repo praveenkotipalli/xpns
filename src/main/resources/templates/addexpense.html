@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Add Expense</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0d0d0d;
+            --paper: #f5f3ee;
+            --surface: #ffffff;
+            --accent: #c8f04a;
+            --accent-dark: #9fcc1a;
+            --muted: #8a897f;
+            --border: #e0ddd5;
+            --input-bg: #faf9f6;
+            --radius: 14px;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        body {
+            background: var(--paper);
+            font-family: var(--font-body);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── HEADER ─────────────────────────────── */
+        header {
+            background: var(--ink);
+            color: #fff;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .brand {
+            font-family: var(--font-head);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        header .brand span {
+            color: var(--accent);
+        }
+
+        header nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            margin-left: 24px;
+            transition: color 0.2s;
+        }
+
+        header nav a:hover { color: #fff; }
+
+        /* ── MAIN LAYOUT ─────────────────────────── */
+        .page-wrap {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px 60px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 480px;
+            animation: slideUp 0.4s ease both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            margin-bottom: 32px;
+        }
+
+        .card-header .eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .card-header h1 {
+            font-family: var(--font-head);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        /* ── FORM FIELDS ─────────────────────────── */
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            min-height: 50px;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--ink);
+            box-shadow: 0 0 0 3px rgba(13,13,13,0.08);
+        }
+
+        .field input::placeholder { color: #bbb9b0; }
+
+        /* date input visibility fix */
+        input[type="date"] { color: var(--ink); }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%; opacity: 0; cursor: pointer;
+        }
+        .field-date-wrap { position: relative; }
+
+        /* select wrapper */
+        .select-wrap {
+            position: relative;
+        }
+        .select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid var(--muted);
+            pointer-events: none;
+        }
+
+        /* row layout for two fields side by side */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ── SUBMIT BUTTON ───────────────────────── */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            margin-top: 12px;
+            background: var(--ink);
+            color: var(--accent);
+            border: none;
+            border-radius: var(--radius);
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-submit:hover { background: #1e1e1e; transform: translateY(-1px); }
+        .btn-submit:active { transform: translateY(0); }
+
+        /* ── TOAST ───────────────────────────────── */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--ink);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            white-space: nowrap;
+            z-index: 999;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        #toast.success { background: #1a7a4a; }
+        #toast.error   { background: #b83232; }
+
+        @media (max-width: 520px) {
+            .card { padding: 28px 20px; border-radius: 20px; }
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{headerFragment :: header}"></div>
+
+<div class="page-wrap">
+    <div class="card">
+        <div class="card-header">
+            <p class="eyebrow">Tracking</p>
+            <h1>Add an expense</h1>
+        </div>
+
+        <form id="expenseForm" action="/expense/save" method="post">
+
+            <div class="field">
+                <label for="date">Date</label>
+                <div class="field-date-wrap">
+                    <input type="date" id="date" name="date" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="item">Item description</label>
+                <input type="text" id="item" name="item" placeholder="e.g. Weekly groceries" required>
+            </div>
+
+            <div class="field">
+                <label for="subCategory">Category</label>
+                <div class="select-wrap">
+                    <select id="subCategory" name="subCategory" required>
+                        <option value="" disabled selected>Select a category</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="spent">Amount (₹)</label>
+                    <input type="number" id="spent" name="spent" step="0.01" placeholder="0.00" required>
+                </div>
+                <div class="field">
+                    <label for="user">Spent by</label>
+                    <input type="text" id="user" name="user" placeholder="Name" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Save Expense →</button>
+        </form>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dateInput = document.getElementById('date');
+        dateInput.value = new Date().toISOString().split('T')[0];
+
+        dateInput.addEventListener('click', function () {
+            if ('showPicker' in HTMLInputElement.prototype) {
+                try { this.showPicker(); } catch (e) {}
+            }
+        });
+
+        fetch('/category/all')
+            .then(r => r.json())
+            .then(categories => {
+                const select = document.getElementById('subCategory');
+                const emojiMap = {
+                    'ENTERTAINMENT': '🎬', 'GROCERIES': '🛒', 'INVESTMENTS': '💼',
+                    'LOSE_OF_MONEY': '💸', 'MEDICAL': '💊', 'OUTSIDE_FOOD': '🍔',
+                    'RENT_AND_OTHER_BILLS': '🏠', 'SALON_AND_COSMETICS': '💇',
+                    'SHOPPING': '🛍️', 'TRANSPORT': '🚗',
+                    'VEGETABLES_FRUITS_DAIRY_AND_MEAT': '🥕', 'OTHERS': '✦'
+                };
+                categories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.key;
+                    opt.text = `${emojiMap[cat.key] || '·'} ${cat.label}`;
+                    select.appendChild(opt);
+                });
+            })
+            .catch(e => console.error('Category fetch error:', e));
+    });
+
+    function showToast(message, type) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'show ' + type;
+        setTimeout(() => { toast.className = ''; }, 3200);
+    }
+
+    document.getElementById('expenseForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const fd = new FormData(this);
+        const payload = {
+            date: fd.get('date'),
+            item: fd.get('item'),
+            category: fd.get('subCategory'),
+            spent: parseFloat(fd.get('spent')),
+            spentBy: fd.get('user')
+        };
+
+        fetch('/expense/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if (res.status === 200) {
+                showToast('Expense saved!', 'success');
+                this.reset();
+                document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            } else {
+                showToast('Failed to save expense.', 'error');
+            }
+        })
+        .catch(() => showToast('Something went wrong.', 'error'));
+    });
+</script>
+</body>
+</html>
