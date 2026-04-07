@@ -1,21 +1,25 @@
 server:
-  port: 8080
+  # Render sets PORT; local dev can use SERVER_PORT or default 8080
+  port: ${PORT:${SERVER_PORT:8080}}
 
 spring:
   application:
     name: expensys
 
   datasource:
-    url: jdbc:mysql://localhost:3306/expensys
-    username: root
-    password: praveen1357M@
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Neon / Postgres: set SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD
+    # Example URL (no credentials in the string): jdbc:postgresql://ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require&channelBinding=require
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/expensys}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: none
     properties:
       hibernate.transaction.jta.platform: org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
   thymeleaf:
     prefix: classpath:/templates/
@@ -38,6 +42,8 @@ logging:
 
 ai:
   ollama:
-    enabled: true
-    base-url: http://localhost:11434
-    model: llama3.2:3b
+    # On a cloud VM, run Ollama on the same host and keep this as http://127.0.0.1:11434
+    # For serverless / PaaS without Ollama, set enabled: false (rule-based assistant still works)
+    enabled: ${AI_OLLAMA_ENABLED:true}
+    base-url: ${AI_OLLAMA_BASE_URL:http://127.0.0.1:11434}
+    model: ${AI_OLLAMA_MODEL:llama3.2:3b}

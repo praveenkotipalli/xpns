@@ -1,0 +1,24 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# After push: connect repo in Render → New Blueprint Instance, or create Web Service manually with Docker.
+
+services:
+  - type: web
+    name: expensys
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      # Ollama does not run on Render; use rule-based assistant unless you add a remote LLM
+      - key: AI_OLLAMA_ENABLED
+        value: "false"
+      - key: JAVA_OPTS
+        value: "-Xmx512m"
