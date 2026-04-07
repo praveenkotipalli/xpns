@@ -17,7 +17,12 @@ services:
         sync: false
       - key: SPRING_DATASOURCE_PASSWORD
         sync: false
-      # Ollama does not run on Render; use rule-based assistant unless you add a remote LLM
+      # Real AI on Render: https://aistudio.google.com/apikey — paste key in dashboard (never commit)
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: "gemini-2.0-flash"
+      # Ollama is not available on Render; Gemini runs when GEMINI_API_KEY is set
       - key: AI_OLLAMA_ENABLED
         value: "false"
       - key: JAVA_OPTS

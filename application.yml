@@ -9,9 +9,12 @@ spring:
   datasource:
     # Neon / Postgres: set SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD
     # Example URL (no credentials in the string): jdbc:postgresql://ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require&channelBinding=require
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/expensys}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-empty-glitter-am4xw2up-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require}
+    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
+    password: ${SPRING_DATASOURCE_PASSWORD:npg_dEbGvgrm1K7S}
+    
+# SPRING_DATASOURCE_USERNAME=neondb_owner
+# SPRING_DATASOURCE_PASSWORD=npg_dEbGvgrm1K7S
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -41,9 +44,12 @@ logging:
     org.flywaydb: DEBUG
 
 ai:
+  # Real LLM on Render/cloud: create a key at https://aistudio.google.com/apikey then set GEMINI_API_KEY in Render
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.0-flash}
   ollama:
-    # On a cloud VM, run Ollama on the same host and keep this as http://127.0.0.1:11434
-    # For serverless / PaaS without Ollama, set enabled: false (rule-based assistant still works)
+    # Local dev: Ollama. On Render, leave disabled or unset — Gemini is used when GEMINI_API_KEY is set
     enabled: ${AI_OLLAMA_ENABLED:true}
     base-url: ${AI_OLLAMA_BASE_URL:http://127.0.0.1:11434}
     model: ${AI_OLLAMA_MODEL:llama3.2:3b}

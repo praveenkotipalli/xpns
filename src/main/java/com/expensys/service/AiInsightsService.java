@@ -12,10 +12,12 @@ import java.util.*;
 @Service
 public class AiInsightsService {
     private final ExpenseService expenseService;
+    private final GeminiService geminiService;
     private final OllamaService ollamaService;
 
-    public AiInsightsService(ExpenseService expenseService, OllamaService ollamaService) {
+    public AiInsightsService(ExpenseService expenseService, GeminiService geminiService, OllamaService ollamaService) {
         this.expenseService = expenseService;
+        this.geminiService = geminiService;
         this.ollamaService = ollamaService;
     }
 
@@ -41,7 +43,11 @@ public class AiInsightsService {
         Map<String, Double> categoryTotals = totalsByCategory(currentExpenses);
         String llmContext = buildContext(question, currentPeriod, previousPeriod, currentTotal, previousTotal, spentByTotals, categoryTotals);
 
-        Optional<String> llmAnswer = ollamaService.generate(llmContext);
+        // Cloud: set GEMINI_API_KEY on Render. Local: Ollama if enabled, else Gemini when key is set.
+        Optional<String> llmAnswer = geminiService.generate(llmContext);
+        if (llmAnswer.isEmpty()) {
+            llmAnswer = ollamaService.generate(llmContext);
+        }
         if (llmAnswer.isPresent()) {
             return llmAnswer.get();
         }
