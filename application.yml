@@ -9,9 +9,9 @@ spring:
   datasource:
     # Neon / Postgres: set SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD
     # Example URL (no credentials in the string): jdbc:postgresql://ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require&channelBinding=require
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-empty-glitter-am4xw2up-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require}
-    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
-    password: ${SPRING_DATASOURCE_PASSWORD:npg_dEbGvgrm1K7S}
+    url: jdbc:postgresql://ep-empty-glitter-am4xw2up-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channelBinding=require
+    username: neondb_owner
+    password: npg_dEbGvgrm1K7S
     
 # SPRING_DATASOURCE_USERNAME=neondb_owner
 # SPRING_DATASOURCE_PASSWORD=npg_dEbGvgrm1K7S
