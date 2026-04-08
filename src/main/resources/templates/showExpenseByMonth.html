@@ -20,94 +20,102 @@
 
         body { background: var(--paper); font-family: var(--font-body); color: var(--ink); min-height: 100vh; }
 
-        /* ── PAGE HEADER ── */
+        /* PAGE HEADER */
         .page-header { background: var(--ink); color: #fff; padding: 40px 40px 46px; }
         .page-header .label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 8px; }
         .page-header h1 { font-family: var(--font-head); font-size: clamp(26px, 4.5vw, 46px); font-weight: 700; letter-spacing: -1px; line-height: 1.1; }
 
-        /* ── FILTER BAR — dropdowns only, no form/submit ── */
+        /* FILTER BAR */
         .filter-bar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 40px;
-            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+            background: var(--surface); border-bottom: 1px solid var(--border);
+            padding: 16px 40px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
         }
         .filter-bar label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 500; }
-
         .filter-bar select {
-            padding: 9px 36px 9px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-family: var(--font-body); font-size: 14px;
-            color: var(--ink); background: var(--paper);
-            outline: none; cursor: pointer;
-            transition: border-color 0.2s;
+            padding: 9px 36px 9px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+            font-family: var(--font-body); font-size: 14px; color: var(--ink); background: var(--paper);
+            outline: none; cursor: pointer; transition: border-color 0.2s;
             -webkit-appearance: none; appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a897f' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
+            background-repeat: no-repeat; background-position: right 12px center;
         }
         .filter-bar select:focus { border-color: var(--ink); }
-
         .filter-divider { width: 1px; height: 28px; background: var(--border); }
-
-        /* Loading dot */
-        .loading-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--accent); margin-left: 4px;
-            animation: pulse 1s ease-in-out infinite;
-            display: none;
-        }
+        .loading-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-left: 4px; animation: pulse 1s ease-in-out infinite; display: none; }
         .loading-dot.active { display: inline-block; }
         @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
 
-        /* ── CONTENT ── */
+        /* CONTENT */
         .content { max-width: 1080px; margin: 0 auto; padding: 32px 24px 64px; }
 
-        /* ── SUMMARY CARDS ── */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
-            gap: 14px; margin-bottom: 30px;
-            transition: opacity 0.2s;
-        }
+        /* SUMMARY CARDS */
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 14px; margin-bottom: 30px; transition: opacity 0.2s; }
         .summary-grid.dimmed { opacity: 0.4; }
         .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 18px; }
         .s-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
         .s-value { font-family: var(--font-head); font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .s-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
         .summary-card.dark { background: var(--ink); border-color: var(--ink); }
         .summary-card.dark .s-label { color: rgba(255,255,255,0.38); }
         .summary-card.dark .s-value { color: var(--accent); }
+        .summary-card.dark .s-note { color: rgba(255,255,255,0.3); }
 
-        /* ── CATEGORY BARS ── */
+        /* SECTION TITLE */
         .section-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.2px; }
-        .category-section { margin-bottom: 30px; }
-        .category-list { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-        .cat-row { display: flex; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f0ede6; gap: 14px; }
-        .cat-row:last-child { border-bottom: none; }
-        .cat-name { flex: 1; font-size: 14px; min-width: 100px; }
-        .cat-bar-wrap { flex: 2; height: 5px; background: #ece9e0; border-radius: 10px; overflow: hidden; }
-        .cat-bar { height: 100%; background: var(--ink); border-radius: 10px; width: 0; transition: width 0.7s ease; }
-        .cat-pct { font-size: 12px; color: var(--muted); min-width: 34px; text-align: right; }
-        .cat-amount { font-family: var(--font-head); font-size: 13px; font-weight: 600; min-width: 90px; text-align: right; }
 
-        /* ── TABLE ── */
-        .table-section { }
+        /* PIE CHART SECTION */
+        .chart-section { margin-bottom: 30px; }
+        .chart-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+            padding: 28px; display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 32px; align-items: center;
+        }
+
+        /* SVG Pie */
+        .pie-wrap { position: relative; width: 220px; height: 220px; margin: 0 auto; }
+        .pie-wrap svg { width: 100%; height: 100%; overflow: visible; transform: rotate(-90deg); }
+
+        /* Each slice animates from 0 to full via stroke-dasharray trick */
+        .pie-slice {
+            transition: opacity 0.2s, transform 0.2s;
+            transform-origin: 110px 110px;
+            cursor: pointer;
+        }
+        .pie-slice:hover { opacity: 0.82; transform: scale(1.04); }
+        .pie-slice.dimmed { opacity: 0.25; }
+
+        /* Center label */
+        .pie-center {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center; pointer-events: none;
+        }
+        .pie-center-val { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+        .pie-center-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+        /* Legend */
+        .legend { display: flex; flex-direction: column; gap: 10px; }
+        .legend-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 12px; border-radius: 10px;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .legend-item:hover { background: var(--paper); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-name { font-size: 13px; flex: 1; }
+        .legend-pct { font-size: 12px; color: var(--muted); margin-right: 4px; }
+        .legend-amt { font-family: var(--font-head); font-size: 13px; font-weight: 600; }
+
+        /* TABLE */
         .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: opacity 0.2s; }
         .table-card.dimmed { opacity: 0.4; pointer-events: none; }
-
         .table-top-bar { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .table-top-bar h3 { font-family: var(--font-head); font-size: 15px; font-weight: 700; }
         .entry-count { font-size: 12px; color: var(--muted); }
 
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        thead th {
-            padding: 11px 18px; text-align: left;
-            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--muted); font-weight: 500;
-            border-bottom: 1px solid var(--border); background: #faf9f6;
-            cursor: pointer; user-select: none; white-space: nowrap;
-        }
+        thead th { padding: 11px 18px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); background: #faf9f6; cursor: pointer; user-select: none; white-space: nowrap; }
         thead th:hover { color: var(--ink); }
         thead th.sorted { color: var(--ink); }
         tbody tr { border-bottom: 1px solid #f0ede6; transition: background 0.15s; }
@@ -119,91 +127,70 @@
         .date-cell { color: var(--muted); font-size: 13px; white-space: nowrap; }
         .user-cell { color: var(--muted); }
 
-        /* ── PAGINATION ── */
-        .pagination {
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; padding: 16px 22px;
-            border-top: 1px solid var(--border);
-        }
-        .pg-btn {
-            padding: 7px 16px; border-radius: 8px;
-            border: 1.5px solid var(--border); background: var(--paper);
-            font-family: var(--font-body); font-size: 13px; font-weight: 500;
-            color: var(--ink); cursor: pointer; transition: background 0.15s, border-color 0.15s;
-        }
+        /* PAGINATION */
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px 22px; border-top: 1px solid var(--border); }
+        .pg-btn { padding: 7px 16px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--paper); font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer; transition: background 0.15s, border-color 0.15s; }
         .pg-btn:hover:not(:disabled) { background: var(--surface); border-color: var(--ink); }
         .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
         .pg-info { font-size: 13px; color: var(--muted); padding: 0 8px; }
 
-        /* ── SKELETON ── */
-        .skel { height: 13px; border-radius: 6px; background: linear-gradient(90deg, #f0ede6 25%, #e8e4db 50%, #f0ede6 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* ── EMPTY / ERROR ── */
-        .empty { text-align: center; padding: 56px 20px; }
-        .empty p { color: var(--muted); font-size: 15px; }
-        .empty a { color: var(--ink); font-weight: 600; }
-
-        /* ── MOBILE ── */
-        .mobile-card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
-        }
-        .mobile-card .mc-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-        .mobile-card .mc-row:last-child { margin-bottom: 0; }
+        /* MOBILE CARDS */
+        .mobile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 10px; }
+        .mc-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .mc-row:last-child { margin-bottom: 0; }
         .mc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
         .mc-val { font-size: 14px; color: var(--ink); }
         .mc-amount { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
 
-        @media (max-width: 640px) {
+        /* EMPTY */
+        .empty { text-align: center; padding: 56px 20px; }
+        .empty p { color: var(--muted); font-size: 15px; }
+        .empty a { color: var(--ink); font-weight: 600; }
+
+        /* SHIMMER */
+        .skel { height: 13px; border-radius: 6px; background: linear-gradient(90deg, #f0ede6 25%, #e8e4db 50%, #f0ede6 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        @media (max-width: 760px) {
             .page-header { padding: 28px 20px 34px; }
             .filter-bar { padding: 14px 20px; gap: 10px; }
             .content { padding: 20px 16px 50px; }
+            .chart-card { grid-template-columns: 1fr; }
+            .pie-wrap { width: 180px; height: 180px; }
         }
     </style>
 </head>
 <body>
 
 <div th:replace="~{headerFragment :: header}"></div>
-<div th:replace="~{headerFragment :: aiWidget}"></div>
 
 <div class="page-header">
     <p class="label">Report</p>
     <h1>Monthly expenses</h1>
 </div>
 
-<!--
-    Filter bar: dropdowns trigger fetch directly via JS (onChange).
-    NO form, NO submit button — avoids any page redirect.
-    API: GET /expense/{year}/{month}?page=&itemsPerPage=&sortField=&sortOrder=
--->
 <div class="filter-bar">
     <label for="monthSelect">Month</label>
-    <select id="monthSelect">
-        <!-- populated by JS -->
-    </select>
-
+    <select id="monthSelect"></select>
     <div class="filter-divider"></div>
-
     <label for="year-filter">Year</label>
-    <select id="year-filter">
-        <!-- populated by JS -->
-    </select>
-
+    <select id="year-filter"></select>
     <div class="loading-dot" id="loadingDot"></div>
 </div>
 
 <div class="content">
 
-    <!-- Summary Cards -->
+    <!-- Summary Cards — always show FULL month totals -->
     <div class="summary-grid" id="summaryGrid">
         <div class="summary-card dark">
             <p class="s-label">Total spent</p>
             <p class="s-value" id="s-total">—</p>
+            <p class="s-note">full month</p>
         </div>
         <div class="summary-card">
             <p class="s-label">Transactions</p>
             <p class="s-value" id="s-count">—</p>
+            <p class="s-note">full month</p>
         </div>
         <div class="summary-card">
             <p class="s-label">Avg per entry</p>
@@ -215,14 +202,23 @@
         </div>
     </div>
 
-    <!-- Category Breakdown -->
-    <div class="category-section" id="catSection" style="display:none">
-        <p class="section-title">By category</p>
-        <div class="category-list" id="catList"></div>
+    <!-- Pie Chart -->
+    <div class="chart-section" id="chartSection" style="display:none">
+        <p class="section-title">Spending by category</p>
+        <div class="chart-card">
+            <div class="pie-wrap">
+                <svg id="pieChart" viewBox="0 0 220 220"></svg>
+                <div class="pie-center">
+                    <div class="pie-center-val" id="pieCenterVal">—</div>
+                    <div class="pie-center-lbl" id="pieCenterLbl">total</div>
+                </div>
+            </div>
+            <div class="legend" id="pieLegend"></div>
+        </div>
     </div>
 
-    <!-- Table -->
-    <div class="table-section">
+    <!-- Transactions Table (paginated) -->
+    <div>
         <p class="section-title">All transactions</p>
         <div class="table-card" id="tableCard">
             <div class="empty"><p>Loading…</p></div>
@@ -234,17 +230,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ── State (mirrors original JS exactly) ──────────────────────────
-    let currentPage     = 1;
-    const itemsPerPage  = 10;
+    // ── State ────────────────────────────────────────────────────────
+    let currentPage      = 1;
+    const itemsPerPage   = 10;
     let currentSortField = null;
-    let currentSortOrder = 1;   // 1 = asc, -1 = desc
-    let data            = [];
-    let isMobileView    = window.innerWidth <= 768;
+    let currentSortOrder = 1;
+    let pageData         = [];   // current page's expenses (for table)
+    let allData          = [];   // full month (for stats + chart)
+    let isMobileView     = window.innerWidth <= 768;
 
     const categoryLabels = {
         GROCERIES: 'Groceries',
-        VEGETABLES_FRUITS_DAIRY_AND_MEAT: 'Vegetables, Fruits, Dairy & Meat',
+        VEGETABLES_FRUITS_DAIRY_AND_MEAT: 'Veg, Fruits & Dairy',
         MEDICAL: 'Medical',
         OUTSIDE_FOOD: 'Outside Food',
         LOSE_OF_MONEY: 'Loss of Money',
@@ -257,141 +254,280 @@ document.addEventListener('DOMContentLoaded', function () {
         OTHERS: 'Others'
     };
 
-    // ── DOM refs ─────────────────────────────────────────────────────
-    const monthSelect  = document.getElementById('monthSelect');
-    const yearFilter   = document.getElementById('year-filter');
-    const tableCard    = document.getElementById('tableCard');
-    const loadingDot   = document.getElementById('loadingDot');
-    const summaryGrid  = document.getElementById('summaryGrid');
+    // Pie color palette — 12 distinct colors
+    const PIE_COLORS = [
+        '#0d0d0d','#c8f04a','#4a90d9','#e8845a',
+        '#7c5cbf','#4caf8a','#e8c84a','#e85a7c',
+        '#5ab4e8','#bf8c4c','#82bf5c','#bf5c5c'
+    ];
+
+    // ── DOM ──────────────────────────────────────────────────────────
+    const monthSelect = document.getElementById('monthSelect');
+    const yearFilter  = document.getElementById('year-filter');
+    const tableCard   = document.getElementById('tableCard');
+    const loadingDot  = document.getElementById('loadingDot');
+    const summaryGrid = document.getElementById('summaryGrid');
 
     // ── Init dropdowns ───────────────────────────────────────────────
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     months.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.toUpperCase();
-        opt.textContent = m;
-        monthSelect.appendChild(opt);
+        const o = document.createElement('option');
+        o.value = m.toUpperCase(); o.textContent = m;
+        monthSelect.appendChild(o);
     });
-
-    // Restore saved month or default to current
     const savedMonth = localStorage.getItem('selectedMonth');
     monthSelect.value = savedMonth || months[new Date().getMonth()].toUpperCase();
 
-    // Year dropdown (2022 → current year)
     const currentYear = new Date().getFullYear();
     for (let y = currentYear; y >= 2022; y--) {
-        const opt = document.createElement('option');
-        opt.value = y; opt.textContent = y;
-        yearFilter.appendChild(opt);
+        const o = document.createElement('option');
+        o.value = y; o.textContent = y;
+        yearFilter.appendChild(o);
     }
     yearFilter.value = currentYear;
 
-    // ── Event listeners: onChange triggers fetch directly (no redirect) ──
-    monthSelect.addEventListener('change', () => {
-        localStorage.setItem('selectedMonth', monthSelect.value);
-        currentPage = 1;
-        fetchExpenseData();
-    });
-    yearFilter.addEventListener('change', () => {
-        currentPage = 1;
-        fetchExpenseData();
-    });
+    monthSelect.addEventListener('change', () => { localStorage.setItem('selectedMonth', monthSelect.value); currentPage = 1; fetchAll(); });
+    yearFilter.addEventListener('change',  () => { currentPage = 1; fetchAll(); });
+    window.addEventListener('resize', () => { isMobileView = window.innerWidth <= 768; renderTransactions(pageData); });
 
-    window.addEventListener('resize', () => {
-        isMobileView = window.innerWidth <= 768;
-        renderTransactions(data);
-    });
+    // ── TWO fetches per month change:
+    //    1. fetchAllMonth()  → large itemsPerPage=9999 → stats + chart (full picture)
+    //    2. fetchPage()      → normal pagination → table only
+    // ────────────────────────────────────────────────────────────────
+    function fetchAll() {
+        loadingDot.classList.add('active');
+        summaryGrid.classList.add('dimmed');
+        tableCard.classList.add('dimmed');
 
-    // ── Core fetch — same URL pattern as the original JS ─────────────
-    // GET /expense/{year}/{month}?page=&itemsPerPage=&sortField=&sortOrder=
-    function fetchExpenseData() {
-        let selectedYear  = yearFilter.value || currentYear;
-        const selectedMonth = monthSelect.value;
+        const year  = yearFilter.value || currentYear;
+        const month = monthSelect.value;
 
-        const apiUrl = `/expense/${selectedYear}/${selectedMonth}` +
-            `?page=${currentPage}` +
-            `&itemsPerPage=${itemsPerPage}` +
-            `&sortField=${currentSortField || ''}` +
-            `&sortOrder=${currentSortOrder === 1 ? 'asc' : 'desc'}`;
+        // Fetch 1 — all records for the month (stats + chart)
+        const allUrl = `/expense/${year}/${month}?page=1&itemsPerPage=9999&sortField=&sortOrder=asc`;
+        // Fetch 2 — current page for table
+        const pageUrl = `/expense/${year}/${month}?page=${currentPage}&itemsPerPage=${itemsPerPage}&sortField=${currentSortField||''}&sortOrder=${currentSortOrder===1?'asc':'desc'}`;
 
+        Promise.all([
+            fetch(allUrl).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
+            fetch(pageUrl).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+        ])
+        .then(([allRes, pageRes]) => {
+            allData  = (allRes.success  ? allRes.data  : []) || [];
+            pageData = (pageRes.success ? pageRes.data : []) || [];
+
+            renderSummary(allData);     // always full-month data
+            renderPieChart(allData);    // always full-month data
+            renderTransactions(pageData); // paginated
+        })
+        .catch(err => {
+            console.error('Fetch error:', err);
+            allData = []; pageData = [];
+            tableCard.innerHTML = `<div class="empty"><p>Error: ${err.message}</p></div>`;
+            document.getElementById('chartSection').style.display = 'none';
+        })
+        .finally(() => {
+            loadingDot.classList.remove('active');
+            summaryGrid.classList.remove('dimmed');
+            tableCard.classList.remove('dimmed');
+        });
+    }
+
+    // Only re-fetch the page (sort/pagination change — stats don't change)
+    function fetchPage() {
         loadingDot.classList.add('active');
         tableCard.classList.add('dimmed');
-        summaryGrid.classList.add('dimmed');
 
-        fetch(apiUrl)
-            .then(r => {
-                if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                return r.json();
-            })
+        const year  = yearFilter.value || currentYear;
+        const month = monthSelect.value;
+        const url   = `/expense/${year}/${month}?page=${currentPage}&itemsPerPage=${itemsPerPage}&sortField=${currentSortField||''}&sortOrder=${currentSortOrder===1?'asc':'desc'}`;
+
+        fetch(url)
+            .then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
             .then(res => {
-                if (res.success) {
-                    data = res.data || [];
-                } else {
-                    throw new Error(res.message || 'Unknown error');
-                }
-                renderAll(data);
+                pageData = (res.success ? res.data : []) || [];
+                renderTransactions(pageData);
             })
             .catch(err => {
-                console.error('Fetch error:', err);
-                data = [];
-                tableCard.innerHTML = `<div class="empty"><p>Error loading data: ${err.message}</p></div>`;
+                tableCard.innerHTML = `<div class="empty"><p>Error: ${err.message}</p></div>`;
             })
             .finally(() => {
                 loadingDot.classList.remove('active');
                 tableCard.classList.remove('dimmed');
-                summaryGrid.classList.remove('dimmed');
             });
     }
 
-    // ── Render all sections ──────────────────────────────────────────
-    function renderAll(expenses) {
-        renderSummary(expenses);
-        renderCategories(expenses);
-        renderTransactions(expenses);
-    }
-
+    // ── Summary (uses allData) ───────────────────────────────────────
     function renderSummary(expenses) {
         if (!expenses.length) {
-            document.getElementById('s-total').textContent = '₹0';
-            document.getElementById('s-count').textContent = '0';
-            document.getElementById('s-avg').textContent   = '—';
-            document.getElementById('s-max').textContent   = '—';
+            ['s-total','s-count','s-avg','s-max'].forEach(id => document.getElementById(id).textContent = '—');
             return;
         }
-        const total = expenses.reduce((s, e) => s + (e.spent || 0), 0);
-        const max   = Math.max(...expenses.map(e => e.spent || 0));
-        document.getElementById('s-total').textContent = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits:0});
+        const total = expenses.reduce((s,e) => s + (e.spent||0), 0);
+        const max   = Math.max(...expenses.map(e => e.spent||0));
+        document.getElementById('s-total').textContent = '₹' + total.toLocaleString('en-IN',{maximumFractionDigits:0});
         document.getElementById('s-count').textContent = expenses.length;
-        document.getElementById('s-avg').textContent   = '₹' + Math.round(total / expenses.length).toLocaleString('en-IN');
-        document.getElementById('s-max').textContent   = '₹' + max.toLocaleString('en-IN', {maximumFractionDigits:0});
+        document.getElementById('s-avg').textContent   = '₹' + Math.round(total/expenses.length).toLocaleString('en-IN');
+        document.getElementById('s-max').textContent   = '₹' + max.toLocaleString('en-IN',{maximumFractionDigits:0});
     }
 
-    function renderCategories(expenses) {
-        if (!expenses.length) { document.getElementById('catSection').style.display = 'none'; return; }
+    // ── Pie Chart (uses allData) ─────────────────────────────────────
+    function renderPieChart(expenses) {
+        const section = document.getElementById('chartSection');
+        if (!expenses.length) { section.style.display = 'none'; return; }
 
         const totals = {};
-        expenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + (e.spent || 0); });
-        const sorted  = Object.entries(totals).sort((a,b) => b[1] - a[1]);
-        const grandTotal = expenses.reduce((s,e) => s + (e.spent||0), 0);
-        const maxAmt  = sorted[0][1];
+        expenses.forEach(e => { totals[e.category] = (totals[e.category]||0) + (e.spent||0); });
+        const sorted     = Object.entries(totals).sort((a,b) => b[1]-a[1]);
+        const grandTotal = expenses.reduce((s,e) => s+(e.spent||0), 0);
 
-        document.getElementById('catList').innerHTML = sorted.map(([cat, amt]) => `
-            <div class="cat-row">
-                <span class="cat-name">${categoryLabels[cat] || cat}</span>
-                <div class="cat-bar-wrap">
-                    <div class="cat-bar" style="width:${Math.round((amt/maxAmt)*100)}%"></div>
-                </div>
-                <span class="cat-pct">${Math.round((amt/grandTotal)*100)}%</span>
-                <span class="cat-amount">₹${amt.toLocaleString('en-IN', {maximumFractionDigits:0})}</span>
-            </div>`).join('');
+        const cx = 110, cy = 110, r = 85, innerR = 52;
+        const circumference = 2 * Math.PI * r;
 
-        document.getElementById('catSection').style.display = 'block';
+        // Build slices using stroke-dasharray on circles (clean approach)
+        const svg    = document.getElementById('pieChart');
+        const legend = document.getElementById('pieLegend');
+        svg.innerHTML = '';
+        legend.innerHTML = '';
+
+        // White donut hole
+        const hole = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        hole.setAttribute('cx', cx); hole.setAttribute('cy', cy);
+        hole.setAttribute('r', innerR); hole.setAttribute('fill','white');
+        hole.setAttribute('stroke','none');
+
+        let offset = 0; // stroke-dashoffset starts from top (we'll rotate the whole SVG -90deg via transform)
+
+        sorted.forEach(([ cat, amt ], i) => {
+            const pct   = amt / grandTotal;
+            const dash  = pct * circumference;
+            const gap   = circumference - dash;
+            const color = PIE_COLORS[i % PIE_COLORS.length];
+            const label = categoryLabels[cat] || cat;
+
+            // Slice
+            const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            circle.setAttribute('cx', cx);
+            circle.setAttribute('cy', cy);
+            circle.setAttribute('r', r);
+            circle.setAttribute('fill', 'none');
+            circle.setAttribute('stroke', color);
+            circle.setAttribute('stroke-width', '34');
+            circle.setAttribute('stroke-dasharray', `0 ${circumference}`);  // start collapsed
+            circle.setAttribute('stroke-dashoffset', -offset);
+            
+            circle.classList.add('pie-slice');
+            circle.dataset.cat   = cat;
+            circle.dataset.amt   = amt;
+            circle.dataset.color = color;
+            circle.dataset.label = label;
+            circle.dataset.pct   = Math.round(pct*100);
+
+            // Animate in
+            setTimeout(() => {
+                circle.setAttribute('stroke-dasharray', `${dash} ${gap}`);
+                circle.style.transition = `stroke-dasharray 0.6s ease ${i*0.07}s`;
+            }, 30);
+
+            // Hover: update center label
+            circle.addEventListener('mouseenter', () => {
+                document.getElementById('pieCenterVal').textContent = '₹' + amt.toLocaleString('en-IN',{maximumFractionDigits:0});
+                document.getElementById('pieCenterLbl').textContent = label;
+                svg.querySelectorAll('.pie-slice').forEach(s => s.classList.toggle('dimmed', s !== circle));
+                legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = li.dataset.cat === cat ? '1' : '0.35');
+            });
+            circle.addEventListener('mouseleave', () => {
+                document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
+                document.getElementById('pieCenterLbl').textContent = 'total';
+                svg.querySelectorAll('.pie-slice').forEach(s => s.classList.remove('dimmed'));
+                legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = '1');
+            });
+
+            svg.appendChild(circle);
+            offset += dash;
+
+            // Legend row
+            const item = document.createElement('div');
+            item.className = 'legend-item';
+            item.dataset.cat = cat;
+            item.innerHTML = `
+                <span class="legend-dot" style="background:${color}"></span>
+                <span class="legend-name">${label}</span>
+                <span class="legend-pct">${Math.round(pct*100)}%</span>
+                <span class="legend-amt">₹${amt.toLocaleString('en-IN',{maximumFractionDigits:0})}</span>`;
+
+            item.addEventListener('mouseenter', () => {
+                svg.querySelectorAll('.pie-slice').forEach(s => s.classList.toggle('dimmed', s.dataset.cat !== cat));
+                legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = li.dataset.cat === cat ? '1' : '0.35');
+                document.getElementById('pieCenterVal').textContent = '₹' + amt.toLocaleString('en-IN',{maximumFractionDigits:0});
+                document.getElementById('pieCenterLbl').textContent = label;
+            });
+            item.addEventListener('mouseleave', () => {
+                svg.querySelectorAll('.pie-slice').forEach(s => s.classList.remove('dimmed'));
+                legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = '1');
+                document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
+                document.getElementById('pieCenterLbl').textContent = 'total';
+            });
+            legend.appendChild(item);
+        });
+
+        svg.appendChild(hole); // hole on top so it covers center of strokes
+
+        // Init center label
+        document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
+        document.getElementById('pieCenterLbl').textContent = 'total';
+
+        section.style.display = 'block';
     }
 
-    // ── Render table (desktop) or cards (mobile) ─────────────────────
+    // ── Table (uses pageData) ────────────────────────────────────────
     function renderTransactions(expenses) {
         if (isMobileView) renderMobile(expenses);
         else renderDesktop(expenses);
+    }
+
+    function renderDesktop(expenses) {
+        if (!expenses.length) {
+            tableCard.innerHTML = `<div class="empty"><p>No expenses this month. <a href="/new">Add one →</a></p></div>`;
+            return;
+        }
+        const si = (f) => currentSortField===f ? (currentSortOrder===1?' ▲':' ▼') : '';
+        const sc = (f) => currentSortField===f ? ' sorted' : '';
+
+        tableCard.innerHTML = `
+        <div class="table-top-bar">
+            <h3>Transactions</h3>
+            <span class="entry-count">${allData.length} total · page ${currentPage}</span>
+        </div>
+        <table>
+            <thead><tr>
+                <th class="sortable${sc('date')}"     data-field="date">Date${si('date')}</th>
+                <th class="sortable${sc('item')}"     data-field="item">Item${si('item')}</th>
+                <th class="sortable${sc('category')}" data-field="category">Category${si('category')}</th>
+                <th class="sortable${sc('spentBy')}"  data-field="spentBy">Spent by${si('spentBy')}</th>
+                <th class="sortable${sc('spent')}"    data-field="spent" style="text-align:right">Amount${si('spent')}</th>
+            </tr></thead>
+            <tbody>
+                ${expenses.map(e => `
+                <tr>
+                    <td class="date-cell">${e.date||''}</td>
+                    <td>${e.item||''}</td>
+                    <td><span class="badge">${categoryLabels[e.category]||e.category}</span></td>
+                    <td class="user-cell">${e.spentBy||''}</td>
+                    <td class="amount-cell">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+                </tr>`).join('')}
+            </tbody>
+        </table>
+        ${paginationHTML()}`;
+
+        tableCard.querySelectorAll('thead th[data-field]').forEach(th => {
+            th.addEventListener('click', () => {
+                if (currentSortField === th.dataset.field) currentSortOrder *= -1;
+                else { currentSortField = th.dataset.field; currentSortOrder = 1; }
+                currentPage = 1;
+                fetchPage();
+            });
+        });
+        attachPaginationListeners();
     }
 
     function renderMobile(expenses) {
@@ -400,93 +536,35 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         tableCard.innerHTML = `
-            <div class="table-top-bar">
-                <h3>Transactions</h3>
-                <span class="entry-count">${expenses.length} entries · page ${currentPage}</span>
-            </div>
-            <div style="padding:14px 16px">
-                ${expenses.map(e => `
-                <div class="mobile-card">
-                    <div class="mc-row">
-                        <span class="mc-label">Item</span>
-                        <span class="mc-amount">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
-                    </div>
-                    <div class="mc-row">
-                        <span class="mc-val" style="font-weight:500">${e.item||''}</span>
-                        <span class="badge">${categoryLabels[e.category]||e.category}</span>
-                    </div>
-                    <div class="mc-row" style="margin-top:4px">
-                        <span class="mc-label">${e.date||''}</span>
-                        <span class="user-cell" style="font-size:13px">${e.spentBy||''}</span>
-                    </div>
-                </div>`).join('')}
-            </div>
-            ${paginationHTML()}`;
-        attachPaginationListeners();
-    }
-
-    function renderDesktop(expenses) {
-        if (!expenses.length) {
-            tableCard.innerHTML = `<div class="empty"><p>No expenses this month. <a href="/new">Add one →</a></p></div>`;
-            return;
-        }
-
-        const sortIcon = (field) => {
-            if (currentSortField !== field) return '';
-            return currentSortOrder === 1 ? ' ▲' : ' ▼';
-        };
-
-        tableCard.innerHTML = `
-            <div class="table-top-bar">
-                <h3>Transactions</h3>
-                <span class="entry-count">${expenses.length} entries · page ${currentPage}</span>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th class="sortable${currentSortField==='date'?' sorted':''}" data-field="date">Date${sortIcon('date')}</th>
-                        <th class="sortable${currentSortField==='item'?' sorted':''}" data-field="item">Item${sortIcon('item')}</th>
-                        <th class="sortable${currentSortField==='category'?' sorted':''}" data-field="category">Category${sortIcon('category')}</th>
-                        <th class="sortable${currentSortField==='spentBy'?' sorted':''}" data-field="spentBy">Spent by${sortIcon('spentBy')}</th>
-                        <th class="sortable${currentSortField==='spent'?' sorted':''}" data-field="spent" style="text-align:right">Amount${sortIcon('spent')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${expenses.map(e => `
-                    <tr>
-                        <td class="date-cell">${e.date||''}</td>
-                        <td>${e.item||''}</td>
-                        <td><span class="badge">${categoryLabels[e.category]||e.category}</span></td>
-                        <td class="user-cell">${e.spentBy||''}</td>
-                        <td class="amount-cell">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-                    </tr>`).join('')}
-                </tbody>
-            </table>
-            ${paginationHTML()}`;
-
-        // Sort on header click — delegates to backend (same as original)
-        tableCard.querySelectorAll('thead th[data-field]').forEach(th => {
-            th.addEventListener('click', () => {
-                if (currentSortField === th.dataset.field) {
-                    currentSortOrder *= -1;
-                } else {
-                    currentSortField = th.dataset.field;
-                    currentSortOrder = 1;
-                }
-                currentPage = 1;
-                fetchExpenseData();
-            });
-        });
-
+        <div class="table-top-bar">
+            <h3>Transactions</h3>
+            <span class="entry-count">${allData.length} total · page ${currentPage}</span>
+        </div>
+        <div style="padding:14px 16px">
+            ${expenses.map(e => `
+            <div class="mobile-card">
+                <div class="mc-row">
+                    <span class="mc-val" style="font-weight:500">${e.item||''}</span>
+                    <span class="mc-amount">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                </div>
+                <div class="mc-row">
+                    <span class="badge">${categoryLabels[e.category]||e.category}</span>
+                    <span class="user-cell" style="font-size:13px">${e.spentBy||''}</span>
+                </div>
+                <div class="mc-row" style="margin-top:4px">
+                    <span class="mc-label">${e.date||''}</span>
+                </div>
+            </div>`).join('')}
+        </div>
+        ${paginationHTML()}`;
         attachPaginationListeners();
     }
 
     // ── Pagination ───────────────────────────────────────────────────
     function paginationHTML() {
-        const isFirst  = currentPage === 1;
-        const isLast   = data.length < itemsPerPage;
-        return `
-        <div class="pagination">
+        const isFirst = currentPage === 1;
+        const isLast  = pageData.length < itemsPerPage;
+        return `<div class="pagination">
             <button class="pg-btn" id="pgPrev" ${isFirst?'disabled':''}>← Prev</button>
             <span class="pg-info">Page ${currentPage}</span>
             <button class="pg-btn" id="pgNext" ${isLast?'disabled':''}>Next →</button>
@@ -496,12 +574,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function attachPaginationListeners() {
         const prev = document.getElementById('pgPrev');
         const next = document.getElementById('pgNext');
-        if (prev) prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; fetchExpenseData(); } });
-        if (next) next.addEventListener('click', () => { currentPage++; fetchExpenseData(); });
+        if (prev) prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; fetchPage(); } });
+        if (next) next.addEventListener('click', () => { currentPage++; fetchPage(); });
     }
 
     // ── Initial load ─────────────────────────────────────────────────
-    fetchExpenseData();
+    fetchAll();
 });
 </script>
 
