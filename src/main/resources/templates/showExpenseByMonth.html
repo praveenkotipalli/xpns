@@ -26,10 +26,7 @@
         .page-header h1 { font-family: var(--font-head); font-size: clamp(26px, 4.5vw, 46px); font-weight: 700; letter-spacing: -1px; line-height: 1.1; }
 
         /* FILTER BAR */
-        .filter-bar {
-            background: var(--surface); border-bottom: 1px solid var(--border);
-            padding: 16px 40px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-        }
+        .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 40px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
         .filter-bar label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 500; }
         .filter-bar select {
             padding: 9px 36px 9px 14px; border: 1.5px solid var(--border); border-radius: 10px;
@@ -67,45 +64,35 @@
         .chart-section { margin-bottom: 30px; }
         .chart-card {
             background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
-            padding: 28px; display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 32px; align-items: center;
+            padding: 28px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: center;
         }
 
-        /* SVG Pie */
         .pie-wrap { position: relative; width: 220px; height: 220px; margin: 0 auto; }
-        .pie-wrap svg { width: 100%; height: 100%; overflow: visible; transform: rotate(-90deg); }
+        .pie-wrap svg { width: 100%; height: 100%; overflow: visible; }
+        .pie-slice { cursor: pointer; transition: opacity 0.2s; }
+        .pie-slice.dimmed { opacity: 0.2; }
 
-        /* Each slice animates from 0 to full via stroke-dasharray trick */
-        .pie-slice {
-            transition: opacity 0.2s, transform 0.2s;
-            transform-origin: 110px 110px;
-            cursor: pointer;
-        }
-        .pie-slice:hover { opacity: 0.82; transform: scale(1.04); }
-        .pie-slice.dimmed { opacity: 0.25; }
+        .pie-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
+        .pie-center-val { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+        .pie-center-lbl { font-size: 10px; color: var(--muted); margin-top: 3px; max-width: 80px; line-height: 1.3; }
 
-        /* Center label */
-        .pie-center {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center; pointer-events: none;
-        }
-        .pie-center-val { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1.1; }
-        .pie-center-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+        .legend { display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto; padding-right: 4px; }
+        .legend::-webkit-scrollbar { width: 4px; }
+        .legend::-webkit-scrollbar-track { background: transparent; }
+        .legend::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-        /* Legend */
-        .legend { display: flex; flex-direction: column; gap: 10px; }
         .legend-item {
             display: flex; align-items: center; gap: 10px;
-            padding: 8px 12px; border-radius: 10px;
-            cursor: pointer; transition: background 0.15s;
+            padding: 8px 12px; border-radius: 10px; cursor: pointer;
+            transition: background 0.15s; border: 1px solid transparent;
         }
-        .legend-item:hover { background: var(--paper); }
-        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-item:hover { background: var(--paper); border-color: var(--border); }
+        .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
         .legend-name { font-size: 13px; flex: 1; }
-        .legend-pct { font-size: 12px; color: var(--muted); margin-right: 4px; }
-        .legend-amt { font-family: var(--font-head); font-size: 13px; font-weight: 600; }
+        .legend-pct { font-size: 11px; color: var(--muted); }
+        .legend-amt { font-family: var(--font-head); font-size: 13px; font-weight: 600; min-width: 70px; text-align: right; }
+        .legend-arrow { font-size: 11px; color: var(--muted); margin-left: 2px; transition: transform 0.15s; }
+        .legend-item:hover .legend-arrow { transform: translateX(2px); color: var(--ink); }
 
         /* TABLE */
         .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: opacity 0.2s; }
@@ -147,9 +134,103 @@
         .empty p { color: var(--muted); font-size: 15px; }
         .empty a { color: var(--ink); font-weight: 600; }
 
-        /* SHIMMER */
-        .skel { height: 13px; border-radius: 6px; background: linear-gradient(90deg, #f0ede6 25%, #e8e4db 50%, #f0ede6 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        /* ══════════════════════════════════════════
+           CATEGORY DRILL-DOWN MODAL
+        ══════════════════════════════════════════ */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(13,13,13,0.45);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            width: 100%; max-width: 560px;
+            max-height: 82vh;
+            display: flex; flex-direction: column;
+            transform: translateY(24px) scale(0.97);
+            transition: transform 0.28s cubic-bezier(0.34, 1.26, 0.64, 1);
+            overflow: hidden;
+        }
+        .modal-backdrop.open .modal { transform: translateY(0) scale(1); }
+
+        /* Modal header */
+        .modal-head {
+            padding: 22px 24px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 14px;
+            flex-shrink: 0;
+        }
+        .modal-color-bar {
+            width: 4px; border-radius: 4px; align-self: stretch; flex-shrink: 0; min-height: 36px;
+        }
+        .modal-head-text { flex: 1; }
+        .modal-cat-name { font-family: var(--font-head); font-size: 18px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; }
+        .modal-meta { display: flex; gap: 16px; margin-top: 6px; flex-wrap: wrap; }
+        .modal-meta-item { font-size: 12px; color: var(--muted); }
+        .modal-meta-item strong { color: var(--ink); font-weight: 600; }
+
+        .modal-close {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1.5px solid var(--border); background: var(--paper);
+            cursor: pointer; font-size: 16px; color: var(--muted);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: background 0.15s, color 0.15s, border-color 0.15s;
+            line-height: 1;
+        }
+        .modal-close:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+        /* Modal body — scrollable list */
+        .modal-body {
+            overflow-y: auto; flex: 1;
+            padding: 0;
+        }
+        .modal-body::-webkit-scrollbar { width: 5px; }
+        .modal-body::-webkit-scrollbar-track { background: transparent; }
+        .modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .modal-row {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 24px;
+            border-bottom: 1px solid #f5f2eb;
+            transition: background 0.12s;
+        }
+        .modal-row:last-child { border-bottom: none; }
+        .modal-row:hover { background: #faf9f6; }
+
+        .modal-row-left { flex: 1; min-width: 0; }
+        .modal-row-item { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .modal-row-meta { display: flex; gap: 10px; margin-top: 3px; }
+        .modal-row-date { font-size: 12px; color: var(--muted); }
+        .modal-row-by { font-size: 12px; color: var(--muted); }
+        .modal-row-by::before { content: '·'; margin-right: 10px; }
+
+        .modal-row-amt { font-family: var(--font-head); font-size: 15px; font-weight: 700; flex-shrink: 0; }
+
+        /* Modal footer */
+        .modal-foot {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0; background: #faf9f6;
+        }
+        .modal-foot-total { font-size: 13px; color: var(--muted); }
+        .modal-foot-total strong { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: var(--ink); }
+        .modal-foot-close {
+            padding: 8px 18px; border-radius: 8px;
+            background: var(--ink); color: #fff; border: none;
+            font-family: var(--font-body); font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: opacity 0.15s;
+        }
+        .modal-foot-close:hover { opacity: 0.8; }
 
         @media (max-width: 760px) {
             .page-header { padding: 28px 20px 34px; }
@@ -157,6 +238,7 @@
             .content { padding: 20px 16px 50px; }
             .chart-card { grid-template-columns: 1fr; }
             .pie-wrap { width: 180px; height: 180px; }
+            .modal { max-height: 90vh; }
         }
     </style>
 </head>
@@ -179,8 +261,6 @@
 </div>
 
 <div class="content">
-
-    <!-- Summary Cards — always show FULL month totals -->
     <div class="summary-grid" id="summaryGrid">
         <div class="summary-card dark">
             <p class="s-label">Total spent</p>
@@ -202,9 +282,8 @@
         </div>
     </div>
 
-    <!-- Pie Chart -->
     <div class="chart-section" id="chartSection" style="display:none">
-        <p class="section-title">Spending by category</p>
+        <p class="section-title">Spending by category <span style="font-size:12px;font-weight:400;color:var(--muted);margin-left:8px;">click any slice or row to see entries</span></p>
         <div class="chart-card">
             <div class="pie-wrap">
                 <svg id="pieChart" viewBox="0 0 220 220"></svg>
@@ -217,26 +296,46 @@
         </div>
     </div>
 
-    <!-- Transactions Table (paginated) -->
     <div>
         <p class="section-title">All transactions</p>
         <div class="table-card" id="tableCard">
             <div class="empty"><p>Loading…</p></div>
         </div>
     </div>
+</div>
 
+<!-- ── Category Drill-Down Modal ───────────────────────── -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+    <div class="modal" id="modal">
+        <div class="modal-head">
+            <div class="modal-color-bar" id="modalColorBar"></div>
+            <div class="modal-head-text">
+                <div class="modal-cat-name" id="modalCatName">Category</div>
+                <div class="modal-meta">
+                    <span class="modal-meta-item" id="modalEntryCount"></span>
+                    <span class="modal-meta-item" id="modalCatTotal"></span>
+                    <span class="modal-meta-item" id="modalCatPct"></span>
+                </div>
+            </div>
+            <button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-foot">
+            <div class="modal-foot-total">Total: <strong id="modalFootTotal">—</strong></div>
+            <button class="modal-foot-close" id="modalFootCloseBtn">Done</button>
+        </div>
+    </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ── State ────────────────────────────────────────────────────────
     let currentPage      = 1;
     const itemsPerPage   = 10;
     let currentSortField = null;
     let currentSortOrder = 1;
-    let pageData         = [];   // current page's expenses (for table)
-    let allData          = [];   // full month (for stats + chart)
+    let pageData         = [];
+    let allData          = [];
     let isMobileView     = window.innerWidth <= 768;
 
     const categoryLabels = {
@@ -254,19 +353,21 @@ document.addEventListener('DOMContentLoaded', function () {
         OTHERS: 'Others'
     };
 
-    // Pie color palette — 12 distinct colors
     const PIE_COLORS = [
-        '#0d0d0d','#c8f04a','#4a90d9','#e8845a',
+        '#0d0d0d','#b8d832','#4a90d9','#e8845a',
         '#7c5cbf','#4caf8a','#e8c84a','#e85a7c',
         '#5ab4e8','#bf8c4c','#82bf5c','#bf5c5c'
     ];
 
     // ── DOM ──────────────────────────────────────────────────────────
-    const monthSelect = document.getElementById('monthSelect');
-    const yearFilter  = document.getElementById('year-filter');
-    const tableCard   = document.getElementById('tableCard');
-    const loadingDot  = document.getElementById('loadingDot');
-    const summaryGrid = document.getElementById('summaryGrid');
+    const monthSelect   = document.getElementById('monthSelect');
+    const yearFilter    = document.getElementById('year-filter');
+    const tableCard     = document.getElementById('tableCard');
+    const loadingDot    = document.getElementById('loadingDot');
+    const summaryGrid   = document.getElementById('summaryGrid');
+    const backdrop      = document.getElementById('modalBackdrop');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalFootClose= document.getElementById('modalFootCloseBtn');
 
     // ── Init dropdowns ───────────────────────────────────────────────
     const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -290,10 +391,49 @@ document.addEventListener('DOMContentLoaded', function () {
     yearFilter.addEventListener('change',  () => { currentPage = 1; fetchAll(); });
     window.addEventListener('resize', () => { isMobileView = window.innerWidth <= 768; renderTransactions(pageData); });
 
-    // ── TWO fetches per month change:
-    //    1. fetchAllMonth()  → large itemsPerPage=9999 → stats + chart (full picture)
-    //    2. fetchPage()      → normal pagination → table only
-    // ────────────────────────────────────────────────────────────────
+    // ── Modal open/close ─────────────────────────────────────────────
+    function openModal(cat, color, entries, grandTotal) {
+        const label = categoryLabels[cat] || cat;
+        const total = entries.reduce((s,e) => s+(e.spent||0), 0);
+        const pct   = grandTotal > 0 ? Math.round((total/grandTotal)*100) : 0;
+
+        document.getElementById('modalColorBar').style.background = color;
+        document.getElementById('modalCatName').textContent       = label;
+        document.getElementById('modalEntryCount').innerHTML      = `<strong>${entries.length}</strong> entries`;
+        document.getElementById('modalCatTotal').innerHTML        = `<strong>₹${total.toLocaleString('en-IN',{maximumFractionDigits:0})}</strong> spent`;
+        document.getElementById('modalCatPct').innerHTML          = `<strong>${pct}%</strong> of month`;
+        document.getElementById('modalFootTotal').textContent     = '₹' + total.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+        // Sort entries by date desc
+        const sorted = [...entries].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+
+        document.getElementById('modalBody').innerHTML = sorted.map(e => `
+            <div class="modal-row">
+                <div class="modal-row-left">
+                    <div class="modal-row-item">${e.item||'—'}</div>
+                    <div class="modal-row-meta">
+                        <span class="modal-row-date">${e.date||''}</span>
+                        <span class="modal-row-by">${e.spentBy||''}</span>
+                    </div>
+                </div>
+                <div class="modal-row-amt">₹${(e.spent||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+            </div>`).join('');
+
+        backdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalFootClose.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ── Fetch ────────────────────────────────────────────────────────
     function fetchAll() {
         loadingDot.classList.add('active');
         summaryGrid.classList.add('dimmed');
@@ -302,25 +442,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const year  = yearFilter.value || currentYear;
         const month = monthSelect.value;
 
-        // Fetch 1 — all records for the month (stats + chart)
-        const allUrl = `/expense/${year}/${month}?page=1&itemsPerPage=9999&sortField=&sortOrder=asc`;
-        // Fetch 2 — current page for table
+        const allUrl  = `/expense/${year}/${month}?page=1&itemsPerPage=9999&sortField=&sortOrder=asc`;
         const pageUrl = `/expense/${year}/${month}?page=${currentPage}&itemsPerPage=${itemsPerPage}&sortField=${currentSortField||''}&sortOrder=${currentSortOrder===1?'asc':'desc'}`;
 
         Promise.all([
-            fetch(allUrl).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
-            fetch(pageUrl).then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+            fetch(allUrl).then(r  => { if(!r.ok)  throw new Error(`HTTP ${r.status}`);  return r.json(); }),
+            fetch(pageUrl).then(r => { if(!r.ok)  throw new Error(`HTTP ${r.status}`);  return r.json(); })
         ])
         .then(([allRes, pageRes]) => {
             allData  = (allRes.success  ? allRes.data  : []) || [];
             pageData = (pageRes.success ? pageRes.data : []) || [];
-
-            renderSummary(allData);     // always full-month data
-            renderPieChart(allData);    // always full-month data
-            renderTransactions(pageData); // paginated
+            renderSummary(allData);
+            renderPieChart(allData);
+            renderTransactions(pageData);
         })
         .catch(err => {
-            console.error('Fetch error:', err);
+            console.error(err);
             allData = []; pageData = [];
             tableCard.innerHTML = `<div class="empty"><p>Error: ${err.message}</p></div>`;
             document.getElementById('chartSection').style.display = 'none';
@@ -332,37 +469,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Only re-fetch the page (sort/pagination change — stats don't change)
     function fetchPage() {
         loadingDot.classList.add('active');
         tableCard.classList.add('dimmed');
-
         const year  = yearFilter.value || currentYear;
         const month = monthSelect.value;
         const url   = `/expense/${year}/${month}?page=${currentPage}&itemsPerPage=${itemsPerPage}&sortField=${currentSortField||''}&sortOrder=${currentSortOrder===1?'asc':'desc'}`;
-
         fetch(url)
             .then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-            .then(res => {
-                pageData = (res.success ? res.data : []) || [];
-                renderTransactions(pageData);
-            })
-            .catch(err => {
-                tableCard.innerHTML = `<div class="empty"><p>Error: ${err.message}</p></div>`;
-            })
-            .finally(() => {
-                loadingDot.classList.remove('active');
-                tableCard.classList.remove('dimmed');
-            });
+            .then(res => { pageData = (res.success ? res.data : []) || []; renderTransactions(pageData); })
+            .catch(err => { tableCard.innerHTML = `<div class="empty"><p>Error: ${err.message}</p></div>`; })
+            .finally(() => { loadingDot.classList.remove('active'); tableCard.classList.remove('dimmed'); });
     }
 
-    // ── Summary (uses allData) ───────────────────────────────────────
+    // ── Summary ──────────────────────────────────────────────────────
     function renderSummary(expenses) {
         if (!expenses.length) {
             ['s-total','s-count','s-avg','s-max'].forEach(id => document.getElementById(id).textContent = '—');
             return;
         }
-        const total = expenses.reduce((s,e) => s + (e.spent||0), 0);
+        const total = expenses.reduce((s,e) => s+(e.spent||0), 0);
         const max   = Math.max(...expenses.map(e => e.spent||0));
         document.getElementById('s-total').textContent = '₹' + total.toLocaleString('en-IN',{maximumFractionDigits:0});
         document.getElementById('s-count').textContent = expenses.length;
@@ -370,116 +496,122 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('s-max').textContent   = '₹' + max.toLocaleString('en-IN',{maximumFractionDigits:0});
     }
 
-    // ── Pie Chart (uses allData) ─────────────────────────────────────
+    // ── Pie Chart ────────────────────────────────────────────────────
     function renderPieChart(expenses) {
         const section = document.getElementById('chartSection');
         if (!expenses.length) { section.style.display = 'none'; return; }
 
-        const totals = {};
-        expenses.forEach(e => { totals[e.category] = (totals[e.category]||0) + (e.spent||0); });
-        const sorted     = Object.entries(totals).sort((a,b) => b[1]-a[1]);
+        // Group by category
+        const groups = {};
+        expenses.forEach(e => {
+            if (!groups[e.category]) groups[e.category] = [];
+            groups[e.category].push(e);
+        });
+        const totals     = Object.entries(groups).map(([cat, items]) => ({ cat, items, total: items.reduce((s,e)=>s+(e.spent||0),0) }));
+        const sorted     = totals.sort((a,b) => b.total - a.total);
         const grandTotal = expenses.reduce((s,e) => s+(e.spent||0), 0);
 
-        const cx = 110, cy = 110, r = 85, innerR = 52;
-        const circumference = 2 * Math.PI * r;
+        const cx = 110, cy = 110, R = 88, innerR = 54;
+        const circumference = 2 * Math.PI * R;
 
-        // Build slices using stroke-dasharray on circles (clean approach)
         const svg    = document.getElementById('pieChart');
         const legend = document.getElementById('pieLegend');
         svg.innerHTML = '';
         legend.innerHTML = '';
 
-        // White donut hole
-        const hole = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        hole.setAttribute('cx', cx); hole.setAttribute('cy', cy);
-        hole.setAttribute('r', innerR); hole.setAttribute('fill','white');
-        hole.setAttribute('stroke','none');
+        // Gap between slices (in svg units)
+        const GAP = 1.5;
 
-        let offset = 0; // stroke-dashoffset starts from top (we'll rotate the whole SVG -90deg via transform)
+        let offset = 0;
 
-        sorted.forEach(([ cat, amt ], i) => {
-            const pct   = amt / grandTotal;
-            const dash  = pct * circumference;
+        sorted.forEach(({ cat, items, total }, i) => {
+            const pct   = total / grandTotal;
+            const dash  = pct * circumference - GAP;
             const gap   = circumference - dash;
             const color = PIE_COLORS[i % PIE_COLORS.length];
             const label = categoryLabels[cat] || cat;
 
-            // Slice
-            const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', cx);
             circle.setAttribute('cy', cy);
-            circle.setAttribute('r', r);
+            circle.setAttribute('r', R);
             circle.setAttribute('fill', 'none');
             circle.setAttribute('stroke', color);
-            circle.setAttribute('stroke-width', '34');
-            circle.setAttribute('stroke-dasharray', `0 ${circumference}`);  // start collapsed
-            circle.setAttribute('stroke-dashoffset', -offset);
-            
+            circle.setAttribute('stroke-width', '32');
+            // Start collapsed, animate to full
+            circle.setAttribute('stroke-dasharray', `0 ${circumference}`);
+            circle.setAttribute('stroke-dashoffset', -(offset));
+            circle.setAttribute('transform', `rotate(-90 ${cx} ${cy})`);
             circle.classList.add('pie-slice');
             circle.dataset.cat   = cat;
-            circle.dataset.amt   = amt;
             circle.dataset.color = color;
             circle.dataset.label = label;
-            circle.dataset.pct   = Math.round(pct*100);
 
-            // Animate in
+            // Animate in staggered
             setTimeout(() => {
+                circle.style.transition = `stroke-dasharray 0.55s cubic-bezier(0.4,0,0.2,1) ${i*0.06}s`;
                 circle.setAttribute('stroke-dasharray', `${dash} ${gap}`);
-                circle.style.transition = `stroke-dasharray 0.6s ease ${i*0.07}s`;
-            }, 30);
+            }, 40);
 
-            // Hover: update center label
+            // Hover highlight
             circle.addEventListener('mouseenter', () => {
-                document.getElementById('pieCenterVal').textContent = '₹' + amt.toLocaleString('en-IN',{maximumFractionDigits:0});
+                document.getElementById('pieCenterVal').textContent = '₹' + total.toLocaleString('en-IN',{maximumFractionDigits:0});
                 document.getElementById('pieCenterLbl').textContent = label;
                 svg.querySelectorAll('.pie-slice').forEach(s => s.classList.toggle('dimmed', s !== circle));
                 legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = li.dataset.cat === cat ? '1' : '0.35');
             });
-            circle.addEventListener('mouseleave', () => {
-                document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
-                document.getElementById('pieCenterLbl').textContent = 'total';
-                svg.querySelectorAll('.pie-slice').forEach(s => s.classList.remove('dimmed'));
-                legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = '1');
-            });
+            circle.addEventListener('mouseleave', resetHighlight);
+
+            // Click → open modal
+            circle.addEventListener('click', () => openModal(cat, color, items, grandTotal));
 
             svg.appendChild(circle);
-            offset += dash;
+            offset += (pct * circumference);
 
             // Legend row
             const item = document.createElement('div');
-            item.className = 'legend-item';
+            item.className  = 'legend-item';
             item.dataset.cat = cat;
             item.innerHTML = `
                 <span class="legend-dot" style="background:${color}"></span>
                 <span class="legend-name">${label}</span>
                 <span class="legend-pct">${Math.round(pct*100)}%</span>
-                <span class="legend-amt">₹${amt.toLocaleString('en-IN',{maximumFractionDigits:0})}</span>`;
+                <span class="legend-amt">₹${total.toLocaleString('en-IN',{maximumFractionDigits:0})}</span>
+                <span class="legend-arrow">›</span>`;
 
             item.addEventListener('mouseenter', () => {
+                document.getElementById('pieCenterVal').textContent = '₹' + total.toLocaleString('en-IN',{maximumFractionDigits:0});
+                document.getElementById('pieCenterLbl').textContent = label;
                 svg.querySelectorAll('.pie-slice').forEach(s => s.classList.toggle('dimmed', s.dataset.cat !== cat));
                 legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = li.dataset.cat === cat ? '1' : '0.35');
-                document.getElementById('pieCenterVal').textContent = '₹' + amt.toLocaleString('en-IN',{maximumFractionDigits:0});
-                document.getElementById('pieCenterLbl').textContent = label;
             });
-            item.addEventListener('mouseleave', () => {
-                svg.querySelectorAll('.pie-slice').forEach(s => s.classList.remove('dimmed'));
-                legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = '1');
-                document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
-                document.getElementById('pieCenterLbl').textContent = 'total';
-            });
+            item.addEventListener('mouseleave', resetHighlight);
+            item.addEventListener('click', () => openModal(cat, color, items, grandTotal));
+
             legend.appendChild(item);
         });
 
-        svg.appendChild(hole); // hole on top so it covers center of strokes
+        // Donut hole
+        const hole = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        hole.setAttribute('cx', cx); hole.setAttribute('cy', cy);
+        hole.setAttribute('r', innerR); hole.setAttribute('fill', 'white');
+        svg.appendChild(hole);
 
-        // Init center label
+        // Init center
         document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
-        document.getElementById('pieCenterLbl').textContent = 'total';
+        document.getElementById('pieCenterLbl').textContent = 'tap a slice';
 
         section.style.display = 'block';
+
+        function resetHighlight() {
+            document.getElementById('pieCenterVal').textContent = '₹' + grandTotal.toLocaleString('en-IN',{maximumFractionDigits:0});
+            document.getElementById('pieCenterLbl').textContent = 'tap a slice';
+            svg.querySelectorAll('.pie-slice').forEach(s => s.classList.remove('dimmed'));
+            legend.querySelectorAll('.legend-item').forEach(li => li.style.opacity = '1');
+        }
     }
 
-    // ── Table (uses pageData) ────────────────────────────────────────
+    // ── Table ────────────────────────────────────────────────────────
     function renderTransactions(expenses) {
         if (isMobileView) renderMobile(expenses);
         else renderDesktop(expenses);
@@ -490,8 +622,8 @@ document.addEventListener('DOMContentLoaded', function () {
             tableCard.innerHTML = `<div class="empty"><p>No expenses this month. <a href="/new">Add one →</a></p></div>`;
             return;
         }
-        const si = (f) => currentSortField===f ? (currentSortOrder===1?' ▲':' ▼') : '';
-        const sc = (f) => currentSortField===f ? ' sorted' : '';
+        const si = f => currentSortField===f ? (currentSortOrder===1?' ▲':' ▼') : '';
+        const sc = f => currentSortField===f ? ' sorted' : '';
 
         tableCard.innerHTML = `
         <div class="table-top-bar">
@@ -523,8 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
             th.addEventListener('click', () => {
                 if (currentSortField === th.dataset.field) currentSortOrder *= -1;
                 else { currentSortField = th.dataset.field; currentSortOrder = 1; }
-                currentPage = 1;
-                fetchPage();
+                currentPage = 1; fetchPage();
             });
         });
         attachPaginationListeners();
@@ -560,7 +691,6 @@ document.addEventListener('DOMContentLoaded', function () {
         attachPaginationListeners();
     }
 
-    // ── Pagination ───────────────────────────────────────────────────
     function paginationHTML() {
         const isFirst = currentPage === 1;
         const isLast  = pageData.length < itemsPerPage;
@@ -578,7 +708,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (next) next.addEventListener('click', () => { currentPage++; fetchPage(); });
     }
 
-    // ── Initial load ─────────────────────────────────────────────────
     fetchAll();
 });
 </script>
